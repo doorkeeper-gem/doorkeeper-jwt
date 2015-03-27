@@ -1,5 +1,5 @@
 module Doorkeeper
-  module Jwt
+  module JWT
     VERSION = "0.1.0"
   end
 end

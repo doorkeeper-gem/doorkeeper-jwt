@@ -1,0 +1,1 @@
+require "doorkeeper-jwt/version"

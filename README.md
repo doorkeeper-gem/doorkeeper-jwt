@@ -1,8 +1,6 @@
-# Doorkeeper::Jwt
+# Doorkeeper::JWT
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/doorkeeper-jwt`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Doorkeeper JWT adds JWT token support to the Doorkeeper OAuth library.
 
 ## Installation
 
@@ -22,7 +20,42 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+In your `doorkeeper.rb` initializer add the follow to the `Doorkeeper.configure` block:
+
+```ruby
+access_token_generator "Doorkeeper::JWT"
+```
+
+Then add a `Doorkeeper::JWT.configure` block below the `Doorkeeper.configure` block to set your JWT preferences.
+
+```ruby
+Doorkeeper::JWT.configure do
+  # Set the payload for the JWT token. This should contain unique information
+  # about the user.
+  # Defaults to a randomly generated token in a hash
+  # { token: "RANDOM-TOKEN" }
+  payload do
+    {
+      user: {
+        id: 123,
+        first_name: "Jane",
+        last_name: "Doe",
+        email: "jdoe@example.com"
+      }
+    }
+  end
+
+  # Set the encryption secret. This would be shared with any other applications
+  # that should be able to read the payload of the token.
+  # Defaults to "secret"
+  secret "MY-SECRET"
+
+  # Specify encryption type. Supports any algorithim in
+  # https://github.com/progrium/ruby-jwt
+  # defaults to nil
+  encryption_method :hs512
+end
+```
 
 ## Development
 

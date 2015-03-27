@@ -5,7 +5,7 @@ require 'doorkeeper-jwt/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "doorkeeper-jwt"
-  spec.version       = Doorkeeper::Jwt::VERSION
+  spec.version       = Doorkeeper::JWT::VERSION
   spec.authors       = ["Chris Warren"]
   spec.email         = ["chris@expectless.com"]
 
@@ -18,7 +18,10 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+  spec.add_dependency "jwt", "~> 1.3.0"
+
   spec.add_development_dependency "bundler", "~> 1.8"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.2.0"
+  spec.add_development_dependency "pry"
 end
