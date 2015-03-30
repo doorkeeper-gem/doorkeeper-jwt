@@ -50,6 +50,21 @@ describe Doorkeeper::JWT, 'configuration' do
     end
   end
 
+  describe 'secret_key_path' do
+    it 'defaults to nil' do
+      Doorkeeper::JWT.configure do
+      end
+      expect(subject.secret_key_path).to be_nil
+    end
+
+    it 'can change the value' do
+      Doorkeeper::JWT.configure do
+        secret_key_path "../support/1024key.pem"
+      end
+      expect(subject.secret_key_path).to eq "../support/1024key.pem"
+    end
+  end
+
   it 'raises an exception when configuration is not set' do
     expect do
       Doorkeeper::JWT.configuration

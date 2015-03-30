@@ -15,7 +15,14 @@ module Doorkeeper
     end
 
     def self.secret_key
-      Doorkeeper::JWT.configuration.secret_key
+      secret_key_file || Doorkeeper::JWT.configuration.secret_key
+    end
+
+    def self.secret_key_file
+      return nil if Doorkeeper::JWT.configuration.secret_key_path.nil?
+      OpenSSL::PKey::RSA.new(
+        File.open(Doorkeeper::JWT.configuration.secret_key_path)
+      )
     end
 
     def self.encryption_method

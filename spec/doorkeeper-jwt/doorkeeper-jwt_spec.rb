@@ -80,5 +80,25 @@ describe Doorkeeper::JWT do
       expect(decoded_token[1]["typ"]).to eq "JWT"
       expect(decoded_token[1]["alg"]).to eq "HS256"
     end
+
+    it "creates a signed JWT token encrypted with an RSA key from a file" do
+      Doorkeeper::JWT.configure do
+        token_payload do
+          {
+            foo: "bar"
+          }
+        end
+        secret_key_path "spec/support/1024key.pem"
+        encryption_method :rs512
+      end
+
+      token = Doorkeeper::JWT.generate
+      secret_key = OpenSSL::PKey::RSA.new File.read("spec/support/1024key.pem")
+      decoded_token = ::JWT.decode(token, secret_key, "RS512")
+      expect(decoded_token[0]).to be_a(Hash)
+      expect(decoded_token[0]["foo"]).to eq "bar"
+      expect(decoded_token[1]["typ"]).to eq "JWT"
+      expect(decoded_token[1]["alg"]).to eq "RS512"
+    end
   end
 end

@@ -10,6 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["chris@expectless.com"]
 
   spec.summary       = %q{JWT token generator for Doorkeeper}
+  spec.description   = %q{JWT token generator extension for Doorkeeper}
   spec.homepage      = "https://github.com/chriswarren/doorkeeper-jwt"
   spec.license       = "MIT"
 
@@ -18,10 +19,10 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "jwt", "~> 1.3.0"
+  spec.add_dependency "jwt", "~> 1.4", ">= 1.4.1"
 
-  spec.add_development_dependency "bundler", "~> 1.8"
-  spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "rspec", "~> 3.2.0"
-  spec.add_development_dependency "pry"
+  spec.add_development_dependency "bundler", "~> 1.8", ">= 1.8"
+  spec.add_development_dependency "rake", "~> 10.0", ">= 10.0"
+  spec.add_development_dependency "rspec", "~> 3.2.0", ">= 3.2"
+  spec.add_development_dependency "pry", "~> 0"
 end
