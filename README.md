@@ -1,3 +1,7 @@
+[![Coverage Status](https://coveralls.io/repos/chriswarren/doorkeeper-jwt/badge.svg?branch=master)](https://coveralls.io/r/chriswarren/doorkeeper-jwt?branch=master)
+[![Build Status](https://travis-ci.org/chriswarren/doorkeeper-jwt.svg?branch=master)](https://travis-ci.org/chriswarren/doorkeeper-jwt)
+[![Code Climate](https://codeclimate.com/github/chriswarren/doorkeeper-jwt/badges/gpa.svg)](https://codeclimate.com/github/chriswarren/doorkeeper-jwt)
+
 # Doorkeeper::JWT
 
 Doorkeeper JWT adds JWT token support to the Doorkeeper OAuth library.
