@@ -4,9 +4,9 @@ require 'jwt'
 
 module Doorkeeper
   module JWT
-    def self.generate(resource_owner_id)
+    def self.generate(opts = {})
       ::JWT.encode(
-        token_payload(resource_owner_id),
+        token_payload(opts),
         secret_key,
         encryption_method
       )
@@ -14,8 +14,8 @@ module Doorkeeper
 
   private
 
-    def self.token_payload(resource_owner_id)
-      Doorkeeper::JWT.configuration.token_payload.call resource_owner_id
+    def self.token_payload(opts = {})
+      Doorkeeper::JWT.configuration.token_payload.call opts
     end
 
     def self.secret_key

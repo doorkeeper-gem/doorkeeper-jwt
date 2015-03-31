@@ -38,8 +38,8 @@ Doorkeeper::JWT.configure do
   # about the user.
   # Defaults to a randomly generated token in a hash
   # { token: "RANDOM-TOKEN" }
-  token_payload do |resource_owner_id|
-    user = User.find(resource_owner_id)
+  token_payload do |opts|
+    user = User.find(opts[:resource_owner_id])
 
     {
       user: {
