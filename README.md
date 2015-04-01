@@ -4,7 +4,7 @@
 
 # Doorkeeper::JWT
 
-Doorkeeper JWT adds JWT token support to the Doorkeeper OAuth library.
+Doorkeeper JWT adds JWT token support to the Doorkeeper OAuth library. Requires Doorkeeper 2.1.5 or newer.
 
 ## Installation
 
