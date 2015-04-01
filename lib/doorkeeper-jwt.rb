@@ -19,7 +19,9 @@ module Doorkeeper
     end
 
     def self.secret_key
-      secret_key_file || Doorkeeper::JWT.configuration.secret_key
+      return secret_key_file if !secret_key_file.nil?
+      return rsa_key if rsa_encryption?
+      Doorkeeper::JWT.configuration.secret_key
     end
 
     def self.secret_key_file
@@ -32,6 +34,14 @@ module Doorkeeper
     def self.encryption_method
       return nil unless Doorkeeper::JWT.configuration.encryption_method
       Doorkeeper::JWT.configuration.encryption_method.to_s.upcase
+    end
+
+    def self.rsa_encryption?
+      /RS\d{3}/ =~ encryption_method
+    end
+
+    def self.rsa_key
+      OpenSSL::PKey::RSA.new(Doorkeeper::JWT.configuration.secret_key)
     end
   end
 end
