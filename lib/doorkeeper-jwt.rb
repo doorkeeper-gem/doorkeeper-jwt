@@ -7,7 +7,7 @@ module Doorkeeper
     def self.generate(opts = {})
       ::JWT.encode(
         token_payload(opts),
-        secret_key,
+        secret_key(opts),
         encryption_method
       )
     end
@@ -16,9 +16,11 @@ module Doorkeeper
 
     def self.token_payload(opts = {})
       Doorkeeper::JWT.configuration.token_payload.call opts
+
     end
 
-    def self.secret_key
+    def self.secret_key(opts)
+      return opts[:application][:secret] if Doorkeeper::JWT.configuration.use_application_secret
       return secret_key_file if !secret_key_file.nil?
       return rsa_key if rsa_encryption?
       Doorkeeper::JWT.configuration.secret_key

@@ -25,6 +25,10 @@ module Doorkeeper
           @config
         end
 
+        def use_application_secret(use_application_secret)
+          @config.instance_variable_set('@use_application_secret', use_application_secret)
+        end
+
         def secret_key(secret_key)
           @config.instance_variable_set('@secret_key', secret_key)
         end
@@ -104,9 +108,14 @@ module Doorkeeper
 
       option :token_payload,
         default: proc{ { token: SecureRandom.method(:hex) } }
+      option :use_application_secret, default: false
       option :secret_key, default: nil
       option :secret_key_path, default: nil
       option :encryption_method, default: nil
+
+      def use_application_secret
+        @use_application_secret ||= false
+      end
 
       def secret_key
         @secret_key ||= nil
@@ -119,6 +128,7 @@ module Doorkeeper
       def encryption_method
         @encryption_method ||= nil
       end
+
     end
   end
 end
