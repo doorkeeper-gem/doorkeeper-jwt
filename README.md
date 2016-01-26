@@ -53,6 +53,11 @@ Doorkeeper::JWT.configure do
     }
   end
 
+  # Use the application secret specified in the Access Grant token
+  # Defaults to false
+  # If you specify `use_application_secret true`, both secret_key and secret_key_path will be ignored
+  use_application_secret false
+
   # Set the encryption secret. This would be shared with any other applications
   # that should be able to read the payload of the token.
   # Defaults to "secret"
