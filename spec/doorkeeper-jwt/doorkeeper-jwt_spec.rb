@@ -140,11 +140,11 @@ describe Doorkeeper::JWT do
       expect(decoded_token[1]["alg"]).to eq "RS512"
     end
 
-    it "creates a signed JWT token encrypted with an application key from a string" do
+    it "creates a signed JWT token encrypted with an app secret" do
       secret_key = OpenSSL::PKey::RSA.new(1024)
       Doorkeeper::JWT.configure do
         use_application_secret true
-        token_payload do |opts|
+        token_payload do
           {
             foo: "bar"
           }
@@ -153,7 +153,7 @@ describe Doorkeeper::JWT do
         encryption_method :rs512
       end
 
-      token = Doorkeeper::JWT.generate({application: {secret: secret_key}})
+      token = Doorkeeper::JWT.generate(application: { secret: secret_key })
       decoded_token = ::JWT.decode(token, secret_key, "RS512")
       expect(decoded_token[0]).to be_a(Hash)
       expect(decoded_token[0]["foo"]).to eq "bar"

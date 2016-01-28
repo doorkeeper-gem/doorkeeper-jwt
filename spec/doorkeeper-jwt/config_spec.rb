@@ -35,8 +35,8 @@ describe Doorkeeper::JWT, 'configuration' do
     end
   end
 
-  describe 'use_application_secret' do
-    it 'defaults to false' do
+  describe "use_application_secret" do
+    it "defaults to false" do
       Doorkeeper::JWT.configure do
       end
       expect(subject.use_application_secret).to be false

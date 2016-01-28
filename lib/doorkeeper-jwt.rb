@@ -16,11 +16,13 @@ module Doorkeeper
 
     def self.token_payload(opts = {})
       Doorkeeper::JWT.configuration.token_payload.call opts
-
     end
 
     def self.secret_key(opts)
-      return opts[:application][:secret] if Doorkeeper::JWT.configuration.use_application_secret
+      if Doorkeeper::JWT.configuration.use_application_secret
+        return opts[:application][:secret]
+      end
+
       return secret_key_file if !secret_key_file.nil?
       return rsa_key if rsa_encryption?
       Doorkeeper::JWT.configuration.secret_key

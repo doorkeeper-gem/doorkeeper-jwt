@@ -26,7 +26,10 @@ module Doorkeeper
         end
 
         def use_application_secret(use_application_secret)
-          @config.instance_variable_set('@use_application_secret', use_application_secret)
+          @config.instance_variable_set(
+            "@use_application_secret",
+            use_application_secret
+          )
         end
 
         def secret_key(secret_key)
@@ -128,7 +131,6 @@ module Doorkeeper
       def encryption_method
         @encryption_method ||= nil
       end
-
     end
   end
 end
