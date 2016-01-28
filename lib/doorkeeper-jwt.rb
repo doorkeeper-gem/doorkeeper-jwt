@@ -19,10 +19,11 @@ module Doorkeeper
     end
 
     def self.secret_key(opts)
+      opts = { application: {} }.merge(opts)
+
       if Doorkeeper::JWT.configuration.use_application_secret
-        if opts[:application] && opts[:application][:secret]
-          return opts[:application][:secret]
-        end
+        return opts[:application][:secret] if opts[:application][:secret]
+
         fail "`use_application_secret` config set, but no app had no secret."
       end
 
