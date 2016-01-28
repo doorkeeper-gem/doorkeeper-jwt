@@ -20,7 +20,10 @@ module Doorkeeper
 
     def self.secret_key(opts)
       if Doorkeeper::JWT.configuration.use_application_secret
-        return opts[:application][:secret]
+        if opts[:application] && opts[:application][:secret]
+          return opts[:application][:secret]
+        end
+        fail "`use_application_secret` config set, but no app had no secret."
       end
 
       return secret_key_file if !secret_key_file.nil?
