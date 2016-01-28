@@ -42,7 +42,7 @@ describe Doorkeeper::JWT, 'configuration' do
       expect(subject.use_application_secret).to be false
     end
 
-    it 'changes the value of secret_key to the applicatin\'s secret' do
+    it "changes the value of secret_key to the application's secret" do
       Doorkeeper::JWT.configure do
         use_application_secret true
       end
