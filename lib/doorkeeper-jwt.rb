@@ -47,7 +47,7 @@ module Doorkeeper
       def application_secret(opts)
         opts = { application: {} }.merge(opts)
         return opts[:application][:secret] if opts[:application][:secret]
-        fail "JWT `use_application_secret` config set, but app has no secret set."
+        fail "JWT `use_application_secret` config set, but no app secret set."
       end
 
       def rsa_encryption?
