@@ -8,7 +8,7 @@ module Doorkeeper
       def generate(opts = {})
         ::JWT.encode(
           token_payload(opts),
-          secret_key,
+          secret_key(opts),
           encryption_method
         )
       end
@@ -19,7 +19,10 @@ module Doorkeeper
         Doorkeeper::JWT.configuration.token_payload.call opts
       end
 
-      def secret_key
+      def secret_key(opts)
+        opts = { application: {} }.merge(opts)
+
+        return application_secret(opts) if use_application_secret?
         return secret_key_file unless secret_key_file.nil?
         return rsa_key if rsa_encryption?
         return ecdsa_key if ecdsa_encryption?
@@ -35,6 +38,16 @@ module Doorkeeper
       def encryption_method
         return nil unless Doorkeeper::JWT.configuration.encryption_method
         Doorkeeper::JWT.configuration.encryption_method.to_s.upcase
+      end
+
+      def use_application_secret?
+        return false unless Doorkeeper::JWT.configuration.use_application_secret
+      end
+
+      def application_secret(opts)
+        opts = { application: {} }.merge(opts)
+        return opts[:application][:secret] if opts[:application][:secret]
+        fail "JWT `use_application_secret` config set, but app has no secret set."
       end
 
       def rsa_encryption?
