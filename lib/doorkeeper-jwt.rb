@@ -41,7 +41,7 @@ module Doorkeeper
       end
 
       def use_application_secret?
-        return false unless Doorkeeper::JWT.configuration.use_application_secret
+        return Doorkeeper::JWT.configuration.use_application_secret
       end
 
       def application_secret(opts)
