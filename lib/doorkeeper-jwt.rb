@@ -45,9 +45,18 @@ module Doorkeeper
       end
 
       def application_secret(opts)
-        opts = { application: {} }.merge(opts)
-        return opts[:application][:secret] if opts[:application][:secret]
-        fail "JWT `use_application_secret` config set, but no app secret set."
+        if opts[:application].nil?
+          fail "JWT `use_application_secret` is enabled but application is " \
+            "nil. This can happen if `client_id` was absent in the request " \
+            "params."
+        end
+
+        if opts[:application][:secret].nil?
+          fail "JWT `use_application_secret` is enabled but the application " \
+            "secret is nil."
+        end
+
+        opts[:application][:secret]
       end
 
       def rsa_encryption?
