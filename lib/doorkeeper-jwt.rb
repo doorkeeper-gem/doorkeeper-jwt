@@ -67,15 +67,15 @@ module Doorkeeper
       end
 
       def rsa_key_file
-        OpenSSL::PKey::RSA.new(secret_key_file_open)
+        secret_key_file_open { |f| OpenSSL::PKey::RSA.new(f) }
       end
 
       def ecdsa_key_file
-        OpenSSL::PKey::EC.new(secret_key_file_open)
+        secret_key_file_open { |f| OpenSSL::PKey::EC.new(f) }
       end
 
-      def secret_key_file_open
-        File.open(Doorkeeper::JWT.configuration.secret_key_path)
+      def secret_key_file_open(&block)
+        File.open(Doorkeeper::JWT.configuration.secret_key_path, &block)
       end
     end
   end
