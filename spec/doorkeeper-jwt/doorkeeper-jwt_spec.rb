@@ -35,6 +35,23 @@ describe Doorkeeper::JWT do
       expect(decoded_token[1]["alg"]).to eq "none"
     end
 
+    it "creates a JWT token with custom headers" do
+      Doorkeeper::JWT.configure do
+        token_headers do
+          {
+            kid: "foo"
+          }
+        end
+      end
+
+      token = Doorkeeper::JWT.generate({})
+      decoded_token = ::JWT.decode(token, nil, false)
+      expect(decoded_token[1]).to be_a(Hash)
+      expect(decoded_token[1]["typ"]).to eq "JWT"
+      expect(decoded_token[1]["alg"]).to eq "none"
+      expect(decoded_token[1]["kid"]).to eq "foo"
+    end
+
     it "creates a signed JWT token" do
       Doorkeeper::JWT.configure do
         secret_key "super secret"
