@@ -20,6 +20,23 @@ describe Doorkeeper::JWT, 'configuration' do
     end
   end
 
+  describe "token_headers" do
+    it "is nil by default" do
+      Doorkeeper::JWT.configure do
+      end
+
+      expect(subject.token_headers).to be_a(Proc)
+    end
+
+    it "sets the block that is accessible via authenticate_admin" do
+      block = proc {}
+      Doorkeeper::JWT.configure do
+        token_headers(&block)
+      end
+      expect(subject.token_headers).to eq(block)
+    end
+  end
+
   describe 'encryption_method' do
     it 'defaults to nil' do
       Doorkeeper::JWT.configure do

@@ -9,7 +9,8 @@ module Doorkeeper
         ::JWT.encode(
           token_payload(opts),
           secret_key(opts),
-          encryption_method
+          encryption_method,
+          token_headers
         )
       end
 
@@ -17,6 +18,10 @@ module Doorkeeper
 
       def token_payload(opts = {})
         Doorkeeper::JWT.configuration.token_payload.call opts
+      end
+
+      def token_headers(opts = {})
+        Doorkeeper::JWT.configuration.token_headers.call opts
       end
 
       def secret_key(opts)

@@ -53,6 +53,13 @@ Doorkeeper::JWT.configure do
     }
   end
 
+  # Optionally set additional headers for the JWT. See https://tools.ietf.org/html/rfc7515#section-4.1
+  token_headers do |opts|
+    {
+      kid: opts[:application][:uid]
+    }
+  end
+
   # Use the application secret specified in the Access Grant token
   # Defaults to false
   # If you specify `use_application_secret true`, both secret_key and secret_key_path will be ignored
