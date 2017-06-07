@@ -10,7 +10,7 @@ module Doorkeeper
           token_payload(opts),
           secret_key(opts),
           encryption_method,
-          token_headers
+          token_headers(opts)
         )
       end
 
