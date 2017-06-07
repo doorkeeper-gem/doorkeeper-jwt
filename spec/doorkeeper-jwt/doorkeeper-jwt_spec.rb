@@ -35,16 +35,16 @@ describe Doorkeeper::JWT do
       expect(decoded_token[1]["alg"]).to eq "none"
     end
 
-    it "creates a JWT token with custom headers" do
+    it "creates a JWT token with custom dynamic headers" do
       Doorkeeper::JWT.configure do
-        token_headers do
+        token_headers do |opts|
           {
-            kid: "foo"
+            kid: opts[:application][:uid]
           }
         end
       end
 
-      token = Doorkeeper::JWT.generate({})
+      token = Doorkeeper::JWT.generate(application: { uid: "foo" })
       decoded_token = ::JWT.decode(token, nil, false)
       expect(decoded_token[1]).to be_a(Hash)
       expect(decoded_token[1]["typ"]).to eq "JWT"
