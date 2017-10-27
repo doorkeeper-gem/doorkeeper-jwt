@@ -29,6 +29,7 @@ module Doorkeeper
 
         return application_secret(opts) if use_application_secret?
         return secret_key_file unless secret_key_file.nil?
+        return secret_key_object unless secret_key_object.nil?
         return rsa_key if rsa_encryption?
         return ecdsa_key if ecdsa_encryption?
         Doorkeeper::JWT.configuration.secret_key
@@ -38,6 +39,10 @@ module Doorkeeper
         return nil if Doorkeeper::JWT.configuration.secret_key_path.nil?
         return rsa_key_file if rsa_encryption?
         return ecdsa_key_file if ecdsa_encryption?
+      end
+
+      def secret_key_object
+        Doorkeeper::JWT.configuration.secret_key_object
       end
 
       def encryption_method

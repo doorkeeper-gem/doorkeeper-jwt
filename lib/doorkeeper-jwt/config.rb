@@ -40,6 +40,10 @@ module Doorkeeper
           @config.instance_variable_set('@secret_key_path', secret_key_path)
         end
 
+        def secret_key_object(secret_key_object)
+          @config.instance_variable_set('@secret_key_object', secret_key_object)
+        end
+
         def encryption_method(encryption_method)
           @config.instance_variable_set(
             '@encryption_method', encryption_method)
@@ -115,6 +119,7 @@ module Doorkeeper
       option :use_application_secret, default: false
       option :secret_key, default: nil
       option :secret_key_path, default: nil
+      option :secret_key_object, default: nil
       option :encryption_method, default: nil
 
       def use_application_secret
@@ -127,6 +132,10 @@ module Doorkeeper
 
       def secret_key_path
         @secret_key_path ||= nil
+      end
+
+      def secret_key_object
+        @secret_key_object ||= nil
       end
 
       def encryption_method
