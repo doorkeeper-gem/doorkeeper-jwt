@@ -4,7 +4,7 @@
 
 # Doorkeeper::JWT
 
-Doorkeeper JWT adds JWT token support to the Doorkeeper OAuth library. Requires Doorkeeper 2.2.0 or newer.
+Doorkeeper JWT adds JWT token support to the Doorkeeper OAuth library. Confirmed to work with Doorkeeper 2.2.x. Untested with later versions of Doorkeeper.
 
 ```ruby
 gem 'doorkeeper'
