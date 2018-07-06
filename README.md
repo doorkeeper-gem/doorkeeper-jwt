@@ -75,7 +75,7 @@ Doorkeeper::JWT.configure do
   # If you specify a secret_key_path it will be used instead of secret_key
   secret_key_path "path/to/file.pem"
 
-  # Specify encryption type. Supports any algorithim in
+  # Specify encryption type. Supports any algorithm in
   # https://github.com/progrium/ruby-jwt
   # defaults to nil
   encryption_method :hs512
