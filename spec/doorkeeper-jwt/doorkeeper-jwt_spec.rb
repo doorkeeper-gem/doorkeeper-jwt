@@ -14,7 +14,6 @@ describe Doorkeeper::JWT do
       decoded_token = ::JWT.decode(token, nil, false)
       expect(decoded_token[0]).to be_a(Hash)
       expect(decoded_token[0]["token"]).to be_a(String)
-      expect(decoded_token[1]["typ"]).to eq "JWT"
       expect(decoded_token[1]["alg"]).to eq "none"
     end
 
@@ -31,7 +30,6 @@ describe Doorkeeper::JWT do
       decoded_token = ::JWT.decode(token, nil, false)
       expect(decoded_token[0]).to be_a(Hash)
       expect(decoded_token[0]["foo"]).to eq "bar"
-      expect(decoded_token[1]["typ"]).to eq "JWT"
       expect(decoded_token[1]["alg"]).to eq "none"
     end
 
@@ -47,7 +45,6 @@ describe Doorkeeper::JWT do
       token = Doorkeeper::JWT.generate(application: { uid: "foo" })
       decoded_token = ::JWT.decode(token, nil, false)
       expect(decoded_token[1]).to be_a(Hash)
-      expect(decoded_token[1]["typ"]).to eq "JWT"
       expect(decoded_token[1]["alg"]).to eq "none"
       expect(decoded_token[1]["kid"]).to eq "foo"
     end
@@ -61,7 +58,6 @@ describe Doorkeeper::JWT do
       decoded_token = ::JWT.decode(token, "super secret", false)
       expect(decoded_token[0]).to be_a(Hash)
       expect(decoded_token[0]["token"]).to be_a(String)
-      expect(decoded_token[1]["typ"]).to eq "JWT"
       expect(decoded_token[1]["alg"]).to eq "none"
     end
 
@@ -76,7 +72,6 @@ describe Doorkeeper::JWT do
       decoded_token = ::JWT.decode(token, "super secret", true, algorithm)
       expect(decoded_token[0]).to be_a(Hash)
       expect(decoded_token[0]["token"]).to be_a(String)
-      expect(decoded_token[1]["typ"]).to eq "JWT"
       expect(decoded_token[1]["alg"]).to eq "HS256"
     end
 
@@ -96,7 +91,6 @@ describe Doorkeeper::JWT do
       decoded_token = ::JWT.decode(token, "super secret", true, algorithm)
       expect(decoded_token[0]).to be_a(Hash)
       expect(decoded_token[0]["foo"]).to eq "bar"
-      expect(decoded_token[1]["typ"]).to eq "JWT"
       expect(decoded_token[1]["alg"]).to eq "HS256"
     end
 
@@ -116,7 +110,6 @@ describe Doorkeeper::JWT do
       decoded_token = ::JWT.decode(token, "super secret", true, algorithm)
       expect(decoded_token[0]).to be_a(Hash)
       expect(decoded_token[0]["foo"]).to eq "bar_1"
-      expect(decoded_token[1]["typ"]).to eq "JWT"
       expect(decoded_token[1]["alg"]).to eq "HS256"
     end
 
@@ -136,7 +129,6 @@ describe Doorkeeper::JWT do
       decoded_token = ::JWT.decode(token, secret_key, true, algorithm: "RS512")
       expect(decoded_token[0]).to be_a(Hash)
       expect(decoded_token[0]["foo"]).to eq "bar"
-      expect(decoded_token[1]["typ"]).to eq "JWT"
       expect(decoded_token[1]["alg"]).to eq "RS512"
     end
 
@@ -156,7 +148,6 @@ describe Doorkeeper::JWT do
       decoded_token = ::JWT.decode(token, secret_key, true, algorithm: "RS512")
       expect(decoded_token[0]).to be_a(Hash)
       expect(decoded_token[0]["foo"]).to eq "bar"
-      expect(decoded_token[1]["typ"]).to eq "JWT"
       expect(decoded_token[1]["alg"]).to eq "RS512"
     end
 
@@ -177,7 +168,6 @@ describe Doorkeeper::JWT do
       decoded_token = ::JWT.decode(token, secret_key, true, algorithm: "ES512")
       expect(decoded_token[0]).to be_a(Hash)
       expect(decoded_token[0]["foo"]).to eq "bar"
-      expect(decoded_token[1]["typ"]).to eq "JWT"
       expect(decoded_token[1]["alg"]).to eq "ES512"
     end
 
@@ -201,7 +191,6 @@ describe Doorkeeper::JWT do
       decoded_token = ::JWT.decode(token, public_key, true, algorithm: "ES512")
       expect(decoded_token[0]).to be_a(Hash)
       expect(decoded_token[0]["foo"]).to eq "bar"
-      expect(decoded_token[1]["typ"]).to eq "JWT"
       expect(decoded_token[1]["alg"]).to eq "ES512"
     end
 
@@ -219,10 +208,9 @@ describe Doorkeeper::JWT do
       end
 
       token = Doorkeeper::JWT.generate(application: { secret: secret_key })
-      decoded_token = ::JWT.decode(token, secret_key, "RS512")
+      decoded_token = ::JWT.decode(token, secret_key, true, algorithm: "RS512")
       expect(decoded_token[0]).to be_a(Hash)
       expect(decoded_token[0]["foo"]).to eq "bar"
-      expect(decoded_token[1]["typ"]).to eq "JWT"
       expect(decoded_token[1]["alg"]).to eq "RS512"
     end
   end
