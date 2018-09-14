@@ -41,7 +41,7 @@ module Doorkeeper
       end
 
       def encryption_method
-        return nil unless Doorkeeper::JWT.configuration.encryption_method
+        return "none" unless Doorkeeper::JWT.configuration.encryption_method
         Doorkeeper::JWT.configuration.encryption_method.to_s.upcase
       end
 
