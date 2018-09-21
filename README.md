@@ -1,6 +1,6 @@
-[![Coverage Status](https://coveralls.io/repos/chriswarren/doorkeeper-jwt/badge.svg?branch=master)](https://coveralls.io/r/chriswarren/doorkeeper-jwt?branch=master)
-[![Build Status](https://travis-ci.org/chriswarren/doorkeeper-jwt.svg?branch=master)](https://travis-ci.org/chriswarren/doorkeeper-jwt)
-[![Code Climate](https://codeclimate.com/github/chriswarren/doorkeeper-jwt/badges/gpa.svg)](https://codeclimate.com/github/chriswarren/doorkeeper-jwt)
+[![Coverage Status](https://coveralls.io/repos/github/doorkeeper-gem/doorkeeper-jwt/badge.svg?branch=master)](https://coveralls.io/github/doorkeeper-gem/doorkeeper-jwt?branch=master)
+[![Build Status](https://travis-ci.org/doorkeeper-gem/doorkeeper-jwt.svg?branch=master)](https://travis-ci.org/doorkeeper-gem/doorkeeper-jwt)
+[![Maintainability](https://api.codeclimate.com/v1/badges/ca4d81b49acabda27e0c/maintainability)](https://codeclimate.com/github/doorkeeper-gem/doorkeeper-jwt/maintainability)
 
 # Doorkeeper::JWT
 
