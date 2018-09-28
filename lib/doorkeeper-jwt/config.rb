@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Doorkeeper
   module JWT
     class MissingConfiguration < StandardError
@@ -11,7 +13,7 @@ module Doorkeeper
     end
 
     def self.configuration
-      @config || (fail MissingConfiguration.new)
+      @config || (raise MissingConfiguration)
     end
 
     class Config
@@ -27,7 +29,7 @@ module Doorkeeper
 
         def use_application_secret(use_application_secret)
           @config.instance_variable_set(
-            "@use_application_secret",
+            '@use_application_secret',
             use_application_secret
           )
         end
@@ -42,7 +44,8 @@ module Doorkeeper
 
         def encryption_method(encryption_method)
           @config.instance_variable_set(
-            '@encryption_method', encryption_method)
+            '@encryption_method', encryption_method
+          )
         end
       end
 
@@ -81,17 +84,17 @@ module Doorkeeper
           Builder.instance_eval do
             define_method name do |*args, &block|
               # TODO: is builder_class option being used?
-              value = unless attribute_builder
-                        block ? block : args.first
-                      else
+              value = if attribute_builder
                         attribute_builder.new(&block).build
+                      else
+                        block || args.first
                       end
 
               @config.instance_variable_set(:"@#{attribute}", value)
             end
           end
 
-          define_method attribute do |*args|
+          define_method attribute do |*|
             if instance_variable_defined?(:"@#{attribute}")
               instance_variable_get(:"@#{attribute}")
             else
@@ -110,7 +113,7 @@ module Doorkeeper
       extend Option
 
       option :token_payload,
-        default: proc{ { token: SecureRandom.method(:hex) } }
+             default: proc { { token: SecureRandom.method(:hex) } }
       option :token_headers, default: proc { {} }
       option :use_application_secret, default: false
       option :secret_key, default: nil

@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Doorkeeper::JWT, 'configuration' do
-  subject{ Doorkeeper::JWT.configuration }
+  subject { Doorkeeper::JWT.configuration }
 
   describe 'token_payload' do
     it 'is nil by default' do

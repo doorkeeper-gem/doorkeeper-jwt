@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "doorkeeper-jwt/version"
 require "doorkeeper-jwt/config"
 require 'jwt'
@@ -51,13 +53,13 @@ module Doorkeeper
 
       def application_secret(opts)
         if opts[:application].nil?
-          fail "JWT `use_application_secret` is enabled but application is " \
+          raise "JWT `use_application_secret` is enabled but application is " \
             "nil. This can happen if `client_id` was absent in the request " \
             "params."
         end
 
         if opts[:application][:secret].nil?
-          fail "JWT `use_application_secret` is enabled but the application " \
+          raise "JWT `use_application_secret` is enabled but the application " \
             "secret is nil."
         end
 

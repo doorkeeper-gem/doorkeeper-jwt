@@ -1,1 +1,3 @@
-require "doorkeeper-jwt/version"
+# frozen_string_literal: true
+
+require 'doorkeeper-jwt/version'
