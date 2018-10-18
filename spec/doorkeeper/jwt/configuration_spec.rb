@@ -2,23 +2,24 @@
 
 require 'spec_helper'
 
-describe Doorkeeper::JWT, 'configuration' do
-  subject { Doorkeeper::JWT.configuration }
+describe(Doorkeeper::JWT, '#configuration') do
+  subject(:configuration) { Doorkeeper::JWT.configuration }
 
   describe 'token_payload' do
     it 'is nil by default' do
       Doorkeeper::JWT.configure {}
 
-      expect(subject.token_payload).to be_a(Proc)
+      expect(configuration.token_payload).to be_a(Proc)
     end
 
     it 'sets the block that is accessible via authenticate_admin' do
       block = proc {}
+
       Doorkeeper::JWT.configure do
         token_payload(&block)
       end
 
-      expect(subject.token_payload).to eq(block)
+      expect(configuration.token_payload).to eq(block)
     end
   end
 
@@ -26,16 +27,17 @@ describe Doorkeeper::JWT, 'configuration' do
     it 'is nil by default' do
       Doorkeeper::JWT.configure {}
 
-      expect(subject.token_headers).to be_a(Proc)
+      expect(configuration.token_headers).to be_a(Proc)
     end
 
     it 'sets the block that is accessible via authenticate_admin' do
       block = proc {}
+
       Doorkeeper::JWT.configure do
         token_headers(&block)
       end
 
-      expect(subject.token_headers).to eq(block)
+      expect(configuration.token_headers).to eq(block)
     end
   end
 
@@ -43,7 +45,7 @@ describe Doorkeeper::JWT, 'configuration' do
     it 'defaults to nil' do
       Doorkeeper::JWT.configure {}
 
-      expect(subject.encryption_method).to be_nil
+      expect(configuration.encryption_method).to be_nil
     end
 
     it 'can change the value' do
@@ -51,7 +53,7 @@ describe Doorkeeper::JWT, 'configuration' do
         encryption_method :rs512
       end
 
-      expect(subject.encryption_method).to eq :rs512
+      expect(configuration.encryption_method).to eq :rs512
     end
   end
 
@@ -59,7 +61,7 @@ describe Doorkeeper::JWT, 'configuration' do
     it 'defaults to false' do
       Doorkeeper::JWT.configure {}
 
-      expect(subject.use_application_secret).to be false
+      expect(configuration.use_application_secret).to be false
     end
 
     it "changes the value of secret_key to the application's secret" do
@@ -67,7 +69,7 @@ describe Doorkeeper::JWT, 'configuration' do
         use_application_secret true
       end
 
-      expect(subject.use_application_secret).to be true
+      expect(configuration.use_application_secret).to be true
     end
   end
 
@@ -75,7 +77,7 @@ describe Doorkeeper::JWT, 'configuration' do
     it 'defaults to nil' do
       Doorkeeper::JWT.configure {}
 
-      expect(subject.secret_key).to be_nil
+      expect(configuration.secret_key).to be_nil
     end
 
     it 'can change the value' do
@@ -83,7 +85,7 @@ describe Doorkeeper::JWT, 'configuration' do
         secret_key 'foo'
       end
 
-      expect(subject.secret_key).to eq 'foo'
+      expect(configuration.secret_key).to eq 'foo'
     end
   end
 
@@ -91,7 +93,7 @@ describe Doorkeeper::JWT, 'configuration' do
     it 'defaults to nil' do
       Doorkeeper::JWT.configure {}
 
-      expect(subject.secret_key_path).to be_nil
+      expect(configuration.secret_key_path).to be_nil
     end
 
     it 'can change the value' do
@@ -99,13 +101,12 @@ describe Doorkeeper::JWT, 'configuration' do
         secret_key_path File.join('..', 'support', '1024key.pem')
       end
 
-      expect(subject.secret_key_path).to eq '../support/1024key.pem'
+      expect(configuration.secret_key_path).to eq '../support/1024key.pem'
     end
   end
 
   it 'raises an exception when configuration is not set' do
-    expect do
-      Doorkeeper::JWT.configuration
-    end.to raise_error Doorkeeper::JWT::MissingConfiguration
+    expect { Doorkeeper::JWT.configuration }
+      .to raise_error Doorkeeper::JWT::MissingConfiguration
   end
 end

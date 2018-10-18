@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "doorkeeper-jwt/version"
-require "doorkeeper-jwt/config"
+require 'doorkeeper/jwt/version'
+require 'doorkeeper/jwt/config'
 require 'jwt'
 
 module Doorkeeper
@@ -19,11 +19,11 @@ module Doorkeeper
       private
 
       def token_payload(opts = {})
-        Doorkeeper::JWT.configuration.token_payload.call opts
+        Doorkeeper::JWT.configuration.token_payload.call(opts)
       end
 
       def token_headers(opts = {})
-        Doorkeeper::JWT.configuration.token_headers.call opts
+        Doorkeeper::JWT.configuration.token_headers.call(opts)
       end
 
       def secret_key(opts)
@@ -33,6 +33,7 @@ module Doorkeeper
         return secret_key_file unless secret_key_file.nil?
         return rsa_key if rsa_encryption?
         return ecdsa_key if ecdsa_encryption?
+
         Doorkeeper::JWT.configuration.secret_key
       end
 
@@ -43,7 +44,8 @@ module Doorkeeper
       end
 
       def encryption_method
-        return "none" unless Doorkeeper::JWT.configuration.encryption_method
+        return 'none' unless Doorkeeper::JWT.configuration.encryption_method
+
         Doorkeeper::JWT.configuration.encryption_method.to_s.upcase
       end
 
@@ -53,14 +55,17 @@ module Doorkeeper
 
       def application_secret(opts)
         if opts[:application].nil?
-          raise "JWT `use_application_secret` is enabled but application is " \
-            "nil. This can happen if `client_id` was absent in the request " \
-            "params."
+          raise(
+            'JWT `use_application_secret` is enabled, but application is nil.' \
+            ' This can happen if `client_id` was absent in the request params.'
+          )
         end
 
         if opts[:application][:secret].nil?
-          raise "JWT `use_application_secret` is enabled but the application " \
-            "secret is nil."
+          raise(
+            'JWT `use_application_secret` is enabled, but the application' \
+            ' secret is nil.'
+          )
         end
 
         opts[:application][:secret]

@@ -41,16 +41,17 @@ Then add a `Doorkeeper::JWT.configure` block below the `Doorkeeper.configure` bl
 ```ruby
 Doorkeeper::JWT.configure do
   # Set the payload for the JWT token. This should contain unique information
-  # about the user.
-  # Defaults to a randomly generated token in a hash
-  # { token: "RANDOM-TOKEN" }
+  # about the user. Defaults to a randomly generated token in a hash:
+  #     { token: "RANDOM-TOKEN" }
   token_payload do |opts|
     user = User.find(opts[:resource_owner_id])
 
     {
       iss: 'My App',
       iat: Time.current.utc.to_i,
-      jti: SecureRandom.uuid, # @see JWT reserved claims - https://tools.ietf.org/html/draft-jones-json-web-token-07#page-7 
+
+      # @see JWT reserved claims - https://tools.ietf.org/html/draft-jones-json-web-token-07#page-7
+      jti: SecureRandom.uuid,
 
       user: {
         id: user.id,
@@ -59,47 +60,44 @@ Doorkeeper::JWT.configure do
     }
   end
 
-  # Optionally set additional headers for the JWT. See https://tools.ietf.org/html/rfc7515#section-4.1
+  # Optionally set additional headers for the JWT. See
+  # https://tools.ietf.org/html/rfc7515#section-4.1
   token_headers do |opts|
-    {
-      kid: opts[:application][:uid]
-    }
+    { kid: opts[:application][:uid] }
   end
 
-  # Use the application secret specified in the Access Grant token
-  # Defaults to false
-  # If you specify `use_application_secret true`, both secret_key and secret_key_path will be ignored
+  # Use the application secret specified in the access grant token. Defaults to
+  # `false`. If you specify `use_application_secret true`, both `secret_key` and
+  # `secret_key_path` will be ignored.
   use_application_secret false
 
   # Set the encryption secret. This would be shared with any other applications
-  # that should be able to read the payload of the token.
-  # Defaults to "secret"
+  # that should be able to read the payload of the token. Defaults to "secret".
   secret_key ENV['JWT_SECRET']
 
-  # If you want to use RS* encoding specify the path to the RSA key
-  # to use for signing.
-  # If you specify a secret_key_path it will be used instead of secret_key
+  # If you want to use RS* encoding specify the path to the RSA key to use for
+  # signing. If you specify a `secret_key_path` it will be used instead of
+  # `secret_key`.
   secret_key_path File.join('path', 'to', 'file.pem')
 
-  # Specify encryption type. Supports any algorithm in
-  # https://github.com/progrium/ruby-jwt
-  # defaults to nil
+  # Specify encryption type (https://github.com/progrium/ruby-jwt). Defaults to
+  # `nil`.
   encryption_method :hs512
 end
 ```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/console` for an interactive
-prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/console` for an interactive prompt
+that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update
-the version number in `version.rb`, and then run `bundle exec rake release` to create a git tag for the
-version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the
+version number in `version.rb`, and then run `bundle exec rake release` to create a git tag for the version, push git
+commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/doorkeeper-jwt/fork )
+1. Fork it (https://github.com/[my-github-username]/doorkeeper-jwt/fork)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
