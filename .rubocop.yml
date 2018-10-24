@@ -1,13 +1,54 @@
+---
+require: rubocop-rspec
+
+AllCops:
+  DefaultFormatter: progress
+  DisplayCopNames: true
+  DisplayStyleGuide: false
+  ExtraDetails: true
+  TargetRubyVersion: 2.5
+
+################################### Bundler ####################################
+
+################################### Gemspec ####################################
+
+#################################### Layout ####################################
+
+##################################### Lint #####################################
+
+################################### Metrics ####################################
+
 Metrics/BlockLength:
-  Exclude:
-    - spec/**/*
-
-LineLength:
-  Exclude:
-    - spec/**/*
-
-StringLiterals:
   Enabled: false
 
+Metrics/MethodLength:
+  Enabled: false
+
+#################################### Naming ####################################
+
+Naming/FileName:
+  Exclude:
+    - lib/doorkeeper-jwt.rb
+
+################################# Performance ##################################
+
+#################################### Rails #####################################
+
+################################### Security ###################################
+
+#################################### Style #####################################
+
 Style/Documentation:
+  Enabled: false
+
+################################### Capybara ###################################
+
+################################## FactoryBot ##################################
+
+#################################### RSpec #####################################
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MultipleExpectations:
   Enabled: false
