@@ -207,27 +207,102 @@ describe Doorkeeper::JWT do
       expect(decoded_token[1]['alg']).to eq 'ES512'
     end
 
-    it 'creates a signed JWT token encrypted with an app secret' do
-      secret_key = OpenSSL::PKey::RSA.new(1024)
-
-      described_class.configure do
-        use_application_secret true
-
-        token_payload do
-          { foo: 'bar' }
-        end
-
-        secret_key secret_key.to_s
-        encryption_method :rs512
+    context "when use_application_secret used" do
+      let(:secret_key) do
+        OpenSSL::PKey::RSA.new(1024)
       end
 
-      token = described_class.generate(application: { secret: secret_key })
-      decoded_token = ::JWT.decode(token, secret_key, true, algorithm: 'RS512')
+      let(:application) do
+        instance_double("Doorkeeper::Application",
+                        secret: Digest::SHA256.digest(secret_key.to_s),
+                        plaintext_secret: secret_key,
+                        secret_strategy: class_double("Doorkeeper::SecretStoring::Sha256Hash",
+                                                      allows_restoring_secrets?: true))
+      end
 
-      expect(decoded_token[0]).to be_a(Hash)
-      expect(decoded_token[0]['foo']).to eq 'bar'
-      expect(decoded_token[1]).to be_a(Hash)
-      expect(decoded_token[1]['alg']).to eq 'RS512'
+      before do
+        described_class.configure do
+          use_application_secret true
+
+          token_payload do
+            { foo: "bar" }
+          end
+
+          encryption_method :rs512
+        end
+      end
+
+      it "creates a signed JWT token encrypted with an app secret", :aggregate_failures do
+        token = described_class.generate(application: application)
+        decoded_token = ::JWT.decode(token, secret_key, true, algorithm: "RS512")
+
+        expect(decoded_token[0]).to be_a(Hash)
+        expect(decoded_token[0]["foo"]).to eq "bar"
+        expect(decoded_token[1]).to be_a(Hash)
+        expect(decoded_token[1]["alg"]).to eq "RS512"
+      end
+    end
+
+    context "when use_application_secret used and Doorkeeper version < 5.1.0" do
+      let(:secret_key) do
+        OpenSSL::PKey::RSA.new(1024)
+      end
+
+      let(:application) { { secret: secret_key } }
+
+      before do
+        described_class.configure do
+          use_application_secret true
+
+          token_payload do
+            { foo: "bar" }
+          end
+
+          encryption_method :rs512
+        end
+      end
+
+      it "creates a signed JWT token encrypted with an app secret", :aggregate_failures do
+        token = described_class.generate(application: application)
+        decoded_token = ::JWT.decode(token, secret_key, true, algorithm: "RS512")
+
+        expect(decoded_token[0]).to be_a(Hash)
+        expect(decoded_token[0]["foo"]).to eq "bar"
+        expect(decoded_token[1]).to be_a(Hash)
+        expect(decoded_token[1]["alg"]).to eq "RS512"
+      end
+    end
+
+    context "when use_application_secret used" do
+      let(:secret_key) do
+        OpenSSL::PKey::RSA.new(1024)
+      end
+
+      let(:application) do
+        instance_double("Doorkeeper::Application",
+                        secret: Digest::SHA256.digest(secret_key.to_s),
+                        plaintext_secret: secret_key,
+                        secret_strategy: class_double("Doorkeeper::SecretStoring::Sha256Hash",
+                                                      allows_restoring_secrets?: false))
+      end
+
+      before do
+        described_class.configure do
+          use_application_secret true
+
+          token_payload do
+            { foo: "bar" }
+          end
+
+          encryption_method :rs512
+        end
+      end
+
+      it "creates a signed JWT token encrypted with an app secret", :aggregate_failures do
+        expect { described_class.generate(application: application) }.to(
+          raise_error.with_message(/secret strategy doesn't/)
+        )
+      end
     end
   end
 end
