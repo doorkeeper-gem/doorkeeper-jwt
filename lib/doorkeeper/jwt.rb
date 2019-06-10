@@ -61,14 +61,26 @@ module Doorkeeper
           )
         end
 
-        if opts[:application][:secret].nil?
+        secret = if opts[:application].respond_to?(:plaintext_secret)
+                   unless opts[:application].secret_strategy.allows_restoring_secrets?
+                     raise(
+                       "JWT `use_application_secret` is enabled, but secret strategy " \
+                       "doesn't allow plaintext secret restoring"
+                     )
+                   end
+                   opts[:application].plaintext_secret
+                 else
+                   opts[:application][:secret]
+                 end
+
+        if secret.nil?
           raise(
             'JWT `use_application_secret` is enabled, but the application' \
             ' secret is nil.'
           )
         end
 
-        opts[:application][:secret]
+        secret
       end
 
       def rsa_encryption?
