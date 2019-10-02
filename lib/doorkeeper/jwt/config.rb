@@ -4,7 +4,7 @@ module Doorkeeper
   module JWT
     class MissingConfiguration < StandardError
       def initialize
-        super('Configuration for doorkeeper-jwt missing.')
+        super("Configuration for doorkeeper-jwt missing.")
       end
     end
 
@@ -28,19 +28,19 @@ module Doorkeeper
         end
 
         def use_application_secret(value)
-          @config.instance_variable_set('@use_application_secret', value)
+          @config.instance_variable_set("@use_application_secret", value)
         end
 
         def secret_key(value)
-          @config.instance_variable_set('@secret_key', value)
+          @config.instance_variable_set("@secret_key", value)
         end
 
         def secret_key_path(value)
-          @config.instance_variable_set('@secret_key_path', value)
+          @config.instance_variable_set("@secret_key_path", value)
         end
 
         def encryption_method(value)
-          @config.instance_variable_set('@encryption_method', value)
+          @config.instance_variable_set("@encryption_method", value)
         end
       end
 

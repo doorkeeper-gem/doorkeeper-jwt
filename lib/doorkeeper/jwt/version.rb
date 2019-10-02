@@ -14,7 +14,7 @@ module Doorkeeper
       PRE = nil
 
       # Full version number
-      STRING = [MAJOR, MINOR, TINY, PRE].compact.join('.')
+      STRING = [MAJOR, MINOR, TINY, PRE].compact.join(".")
     end
   end
 end

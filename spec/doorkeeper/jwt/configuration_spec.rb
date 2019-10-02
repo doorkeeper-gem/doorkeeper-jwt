@@ -1,21 +1,21 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require "spec_helper"
 
-describe(Doorkeeper::JWT, '#configuration') do
-  subject(:configuration) { Doorkeeper::JWT.configuration }
+describe(Doorkeeper::JWT, "#configuration") do
+  subject(:configuration) { described_class.configuration }
 
-  describe 'token_payload' do
-    it 'is nil by default' do
-      Doorkeeper::JWT.configure {}
+  describe "token_payload" do
+    it "is nil by default" do
+      described_class.configure {}
 
       expect(configuration.token_payload).to be_a(Proc)
     end
 
-    it 'sets the block that is accessible via authenticate_admin' do
+    it "sets the block that is accessible via authenticate_admin" do
       block = proc {}
 
-      Doorkeeper::JWT.configure do
+      described_class.configure do
         token_payload(&block)
       end
 
@@ -23,17 +23,17 @@ describe(Doorkeeper::JWT, '#configuration') do
     end
   end
 
-  describe 'token_headers' do
-    it 'is nil by default' do
-      Doorkeeper::JWT.configure {}
+  describe "token_headers" do
+    it "is nil by default" do
+      described_class.configure {}
 
       expect(configuration.token_headers).to be_a(Proc)
     end
 
-    it 'sets the block that is accessible via authenticate_admin' do
+    it "sets the block that is accessible via authenticate_admin" do
       block = proc {}
 
-      Doorkeeper::JWT.configure do
+      described_class.configure do
         token_headers(&block)
       end
 
@@ -41,15 +41,15 @@ describe(Doorkeeper::JWT, '#configuration') do
     end
   end
 
-  describe 'encryption_method' do
-    it 'defaults to nil' do
-      Doorkeeper::JWT.configure {}
+  describe "encryption_method" do
+    it "defaults to nil" do
+      described_class.configure {}
 
       expect(configuration.encryption_method).to be_nil
     end
 
-    it 'can change the value' do
-      Doorkeeper::JWT.configure do
+    it "can change the value" do
+      described_class.configure do
         encryption_method :rs512
       end
 
@@ -57,15 +57,15 @@ describe(Doorkeeper::JWT, '#configuration') do
     end
   end
 
-  describe 'use_application_secret' do
-    it 'defaults to false' do
-      Doorkeeper::JWT.configure {}
+  describe "use_application_secret" do
+    it "defaults to false" do
+      described_class.configure {}
 
       expect(configuration.use_application_secret).to be false
     end
 
     it "changes the value of secret_key to the application's secret" do
-      Doorkeeper::JWT.configure do
+      described_class.configure do
         use_application_secret true
       end
 
@@ -73,40 +73,40 @@ describe(Doorkeeper::JWT, '#configuration') do
     end
   end
 
-  describe 'secret_key' do
-    it 'defaults to nil' do
-      Doorkeeper::JWT.configure {}
+  describe "secret_key" do
+    it "defaults to nil" do
+      described_class.configure {}
 
       expect(configuration.secret_key).to be_nil
     end
 
-    it 'can change the value' do
-      Doorkeeper::JWT.configure do
-        secret_key 'foo'
+    it "can change the value" do
+      described_class.configure do
+        secret_key "foo"
       end
 
-      expect(configuration.secret_key).to eq 'foo'
+      expect(configuration.secret_key).to eq "foo"
     end
   end
 
-  describe 'secret_key_path' do
-    it 'defaults to nil' do
-      Doorkeeper::JWT.configure {}
+  describe "secret_key_path" do
+    it "defaults to nil" do
+      described_class.configure {}
 
       expect(configuration.secret_key_path).to be_nil
     end
 
-    it 'can change the value' do
-      Doorkeeper::JWT.configure do
-        secret_key_path File.join('..', 'support', '1024key.pem')
+    it "can change the value" do
+      described_class.configure do
+        secret_key_path File.join("..", "support", "1024key.pem")
       end
 
-      expect(configuration.secret_key_path).to eq '../support/1024key.pem'
+      expect(configuration.secret_key_path).to eq "../support/1024key.pem"
     end
   end
 
-  it 'raises an exception when configuration is not set' do
-    expect { Doorkeeper::JWT.configuration }
+  it "raises an exception when configuration is not set" do
+    expect { described_class.configuration }
       .to raise_error Doorkeeper::JWT::MissingConfiguration
   end
 end

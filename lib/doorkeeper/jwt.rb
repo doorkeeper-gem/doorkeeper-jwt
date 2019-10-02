@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'doorkeeper/jwt/version'
-require 'doorkeeper/jwt/config'
-require 'jwt'
+require "doorkeeper/jwt/version"
+require "doorkeeper/jwt/config"
+require "jwt"
 
 module Doorkeeper
   module JWT
@@ -44,7 +44,7 @@ module Doorkeeper
       end
 
       def encryption_method
-        return 'none' unless Doorkeeper::JWT.configuration.encryption_method
+        return "none" unless Doorkeeper::JWT.configuration.encryption_method
 
         Doorkeeper::JWT.configuration.encryption_method.to_s.upcase
       end
@@ -56,8 +56,8 @@ module Doorkeeper
       def application_secret(opts)
         if opts[:application].nil?
           raise(
-            'JWT `use_application_secret` is enabled, but application is nil.' \
-            ' This can happen if `client_id` was absent in the request params.'
+            "JWT `use_application_secret` is enabled, but application is nil." \
+            " This can happen if `client_id` was absent in the request params."
           )
         end
 
@@ -75,8 +75,8 @@ module Doorkeeper
 
         if secret.nil?
           raise(
-            'JWT `use_application_secret` is enabled, but the application' \
-            ' secret is nil.'
+            "JWT `use_application_secret` is enabled, but the application" \
+            " secret is nil."
           )
         end
 
