@@ -8,7 +8,10 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
+## [0.4.0] - 2019-10-02
+
 - Restructured library files to follow naming conventions. (https://guides.rubygems.org/name-your-gem/).
+- Add support of new doorkeeper with encryption [#30](https://github.com/doorkeeper-gem/doorkeeper-jwt/pull/30)
 
 ## [0.3.0] - 2018-10-01
 
