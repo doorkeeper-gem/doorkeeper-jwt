@@ -8,6 +8,12 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
+## [0.4.1] - 2022-02-23
+
+- JWT gem requirement relaxed to use any version >= 2.1
+
+### Changed
+
 ## [0.4.0] - 2019-10-02
 
 - Restructured library files to follow naming conventions. (https://guides.rubygems.org/name-your-gem/).

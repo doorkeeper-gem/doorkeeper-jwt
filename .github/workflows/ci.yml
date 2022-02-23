@@ -1,0 +1,38 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: >-
+      Ruby ${{ matrix.ruby }}
+    env:
+      CI: true
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' || matrix.experimental }}
+    if: |
+      !(   contains(github.event.pull_request.title,  '[ci skip]')
+        || contains(github.event.pull_request.title,  '[skip ci]'))
+    strategy:
+      fail-fast: true
+      matrix:
+        experimental: [false]
+        os: [ ubuntu-latest ]
+        ruby:
+          - 2.6
+          - 2.7
+          - '3.0'
+          - '3.1'
+    steps:
+      - name: Repo checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+
+      - name: Run tests
+        timeout-minutes: 10
+        run: bundle exec rake test
