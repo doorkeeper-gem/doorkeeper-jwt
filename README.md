@@ -49,9 +49,11 @@ Doorkeeper::JWT.configure do
     {
       iss: 'My App',
       iat: Time.current.utc.to_i,
+      aud: opts[:application][:uid],
 
       # @see JWT reserved claims - https://tools.ietf.org/html/draft-jones-json-web-token-07#page-7
       jti: SecureRandom.uuid,
+      sub: user.id,
 
       user: {
         id: user.id,
@@ -62,9 +64,11 @@ Doorkeeper::JWT.configure do
 
   # Optionally set additional headers for the JWT. See
   # https://tools.ietf.org/html/rfc7515#section-4.1
-  token_headers do |opts|
-    { kid: opts[:application][:uid] }
-  end
+  # JWK can be used to automatically verify RS* tokens client-side if token's kid matches a public kid in /oauth/discovery/keys
+  # token_headers do |_opts|
+  #   key = OpenSSL::PKey::RSA.new(File.read(File.join('path', 'to', 'file.pem')))
+  #   { kid: JSON::JWK.new(key)[:kid] }
+  # end
 
   # Use the application secret specified in the access grant token. Defaults to
   # `false`. If you specify `use_application_secret true`, both `secret_key` and
