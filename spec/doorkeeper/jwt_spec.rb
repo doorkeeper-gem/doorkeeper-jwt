@@ -65,7 +65,7 @@ describe Doorkeeper::JWT do
       expect(decoded_token[1]["alg"]).to eq "none"
     end
 
-    it "creates a signed JWT token" do
+    it "creates a signed JWT token using hs256" do
       described_class.configure do
         secret_key "super secret"
         signing_method :hs256
@@ -120,7 +120,6 @@ describe Doorkeeper::JWT do
       expect(decoded_token[1]).to be_a(Hash)
       expect(decoded_token[1]["alg"]).to eq "HS256"
     end
-
 
     it "creates a signed JWT token with a custom dynamic payload" do
       described_class.configure do
