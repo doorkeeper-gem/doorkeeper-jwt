@@ -67,7 +67,7 @@ Doorkeeper::JWT.configure do
   # JWK can be used to automatically verify RS* tokens client-side if token's kid matches a public kid in /oauth/discovery/keys
   # token_headers do |_opts|
   #   key = OpenSSL::PKey::RSA.new(File.read(File.join('path', 'to', 'file.pem')))
-  #   { kid: JSON::JWK.new(key)[:kid] }
+  #   { kid: JWT::JWK.new(key)[:kid] }
   # end
 
   # Use the application secret specified in the access grant token. Defaults to
