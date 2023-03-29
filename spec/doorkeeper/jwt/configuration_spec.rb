@@ -41,19 +41,19 @@ describe(Doorkeeper::JWT, "#configuration") do
     end
   end
 
-  describe "encryption_method" do
+  describe "signing_method" do
     it "defaults to nil" do
       described_class.configure {}
 
-      expect(configuration.encryption_method).to be_nil
+      expect(configuration.signing_method).to be_nil
     end
 
     it "can change the value" do
       described_class.configure do
-        encryption_method :rs512
+        signing_method :rs512
       end
 
-      expect(configuration.encryption_method).to eq :rs512
+      expect(configuration.signing_method).to eq :rs512
     end
   end
 

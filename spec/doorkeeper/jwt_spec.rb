@@ -65,10 +65,10 @@ describe Doorkeeper::JWT do
       expect(decoded_token[1]["alg"]).to eq "none"
     end
 
-    it "creates a signed encrypted JWT token" do
+    it "creates a signed JWT token using hs256" do
       described_class.configure do
         secret_key "super secret"
-        encryption_method :hs256
+        signing_method :hs256
       end
 
       token = described_class.generate({})
@@ -81,7 +81,27 @@ describe Doorkeeper::JWT do
       expect(decoded_token[1]["alg"]).to eq "HS256"
     end
 
-    it "creates a signed encrypted JWT token with a custom payload" do
+    it "creates a signed JWT token with a custom payload" do
+      described_class.configure do
+        token_payload do
+          { foo: "bar" }
+        end
+
+        secret_key "super secret"
+        signing_method :hs256
+      end
+
+      token = described_class.generate({})
+      algorithm = { algorithm: "HS256" }
+      decoded_token = ::JWT.decode(token, "super secret", true, algorithm)
+
+      expect(decoded_token[0]).to be_a(Hash)
+      expect(decoded_token[0]["foo"]).to eq "bar"
+      expect(decoded_token[1]).to be_a(Hash)
+      expect(decoded_token[1]["alg"]).to eq "HS256"
+    end
+
+    it "creates a signed JWT token using the deprecated encryption_method" do
       described_class.configure do
         token_payload do
           { foo: "bar" }
@@ -101,14 +121,14 @@ describe Doorkeeper::JWT do
       expect(decoded_token[1]["alg"]).to eq "HS256"
     end
 
-    it "creates a signed encrypted JWT token with a custom dynamic payload" do
+    it "creates a signed JWT token with a custom dynamic payload" do
       described_class.configure do
         token_payload do |opts|
           { foo: "bar_#{opts[:resource_owner_id]}" }
         end
 
         secret_key "super secret"
-        encryption_method :hs256
+        signing_method :hs256
       end
 
       token = described_class.generate(resource_owner_id: 1)
@@ -121,14 +141,14 @@ describe Doorkeeper::JWT do
       expect(decoded_token[1]["alg"]).to eq "HS256"
     end
 
-    it "creates a signed JWT token encrypted with an RSA key from a file" do
+    it "creates a signed JWT token with an RSA key from a file" do
       described_class.configure do
         token_payload do
           { foo: "bar" }
         end
 
         secret_key_path "spec/support/1024key.pem"
-        encryption_method :rs512
+        signing_method :rs512
       end
 
       token = described_class.generate({})
@@ -141,7 +161,7 @@ describe Doorkeeper::JWT do
       expect(decoded_token[1]["alg"]).to eq "RS512"
     end
 
-    it "creates a signed JWT token encrypted with an RSA key from a string" do
+    it "creates a signed JWT token with an RSA key from a string" do
       secret_key = OpenSSL::PKey::RSA.new(1024)
 
       described_class.configure do
@@ -150,7 +170,7 @@ describe Doorkeeper::JWT do
         end
 
         secret_key secret_key.to_s
-        encryption_method :rs512
+        signing_method :rs512
       end
 
       token = described_class.generate({})
@@ -162,14 +182,14 @@ describe Doorkeeper::JWT do
       expect(decoded_token[1]["alg"]).to eq "RS512"
     end
 
-    it "creates a signed JWT token encrypted with an ECDSA key from a file" do
+    it "creates a signed JWT token with an ECDSA key from a file" do
       described_class.configure do
         token_payload do
           { foo: "bar" }
         end
 
         secret_key_path "spec/support/512key.pem"
-        encryption_method :es512
+        signing_method :es512
       end
 
       token = described_class.generate({})
@@ -183,7 +203,7 @@ describe Doorkeeper::JWT do
       expect(decoded_token[1]["alg"]).to eq "ES512"
     end
 
-    it "creates a signed JWT token encrypted with an ECDSA key from a string" do
+    it "creates a signed JWT token with an ECDSA key from a string" do
       secret_key = OpenSSL::PKey::EC.new("secp521r1")
       secret_key.generate_key
       public_key = OpenSSL::PKey::EC.new secret_key
@@ -195,7 +215,7 @@ describe Doorkeeper::JWT do
         end
 
         secret_key secret_key
-        encryption_method :es512
+        signing_method :es512
       end
 
       token = described_class.generate({})
@@ -228,11 +248,11 @@ describe Doorkeeper::JWT do
             { foo: "bar" }
           end
 
-          encryption_method :rs512
+          signing_method :rs512
         end
       end
 
-      it "creates a signed JWT token encrypted with an app secret", :aggregate_failures do
+      it "creates a signed JWT token with an app secret", :aggregate_failures do
         token = described_class.generate(application: application)
         decoded_token = ::JWT.decode(token, secret_key, true, algorithm: "RS512")
 
@@ -258,11 +278,11 @@ describe Doorkeeper::JWT do
             { foo: "bar" }
           end
 
-          encryption_method :rs512
+          signing_method :rs512
         end
       end
 
-      it "creates a signed JWT token encrypted with an app secret", :aggregate_failures do
+      it "creates a signed JWT token with an app secret", :aggregate_failures do
         token = described_class.generate(application: application)
         decoded_token = ::JWT.decode(token, secret_key, true, algorithm: "RS512")
 
@@ -294,11 +314,11 @@ describe Doorkeeper::JWT do
             { foo: "bar" }
           end
 
-          encryption_method :rs512
+          signing_method :rs512
         end
       end
 
-      it "creates a signed JWT token encrypted with an app secret", :aggregate_failures do
+      it "creates a signed JWT token with an app secret", :aggregate_failures do
         expect { described_class.generate(application: application) }.to(
           raise_error.with_message(/secret strategy doesn't/)
         )

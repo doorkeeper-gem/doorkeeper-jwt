@@ -39,8 +39,13 @@ module Doorkeeper
           @config.instance_variable_set("@secret_key_path", value)
         end
 
+        # For backward compatibility. This library does not support encryption.
         def encryption_method(value)
-          @config.instance_variable_set("@encryption_method", value)
+          @config.instance_variable_set("@signing_method", value)
+        end
+
+        def signing_method(value)
+          @config.instance_variable_set("@signing_method", value)
         end
       end
 
@@ -118,7 +123,7 @@ module Doorkeeper
       option :use_application_secret, default: false
       option :secret_key, default: nil
       option :secret_key_path, default: nil
-      option :encryption_method, default: nil
+      option :signing_method, default: nil
 
       def use_application_secret
         @use_application_secret ||= false
@@ -132,8 +137,8 @@ module Doorkeeper
         @secret_key_path ||= nil
       end
 
-      def encryption_method
-        @encryption_method ||= nil
+      def signing_method
+        @signing_method ||= nil
       end
     end
   end
