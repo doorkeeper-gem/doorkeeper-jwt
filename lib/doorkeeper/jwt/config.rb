@@ -111,7 +111,7 @@ module Doorkeeper
 
       option(
         :token_payload,
-        default: proc { { token: SecureRandom.method(:hex) } }
+        default: proc { { token: SecureRandom.hex } }
       )
 
       option :token_headers, default: proc { {} }

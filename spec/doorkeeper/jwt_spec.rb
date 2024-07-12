@@ -15,7 +15,7 @@ describe Doorkeeper::JWT do
       decoded_token = ::JWT.decode(token, nil, false)
 
       expect(decoded_token[0]).to be_a(Hash)
-      expect(decoded_token[0]["token"]).to be_a(String)
+      expect(decoded_token[0]["token"]).to match(/^\h{32}$/)
       expect(decoded_token[1]).to be_a(Hash)
       expect(decoded_token[1]["alg"]).to eq "none"
     end
