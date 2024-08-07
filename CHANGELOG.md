@@ -6,7 +6,9 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## master
 
-### Changed
+### Fixed
+
+- Fixed default token generation to return a random hex value [#56](https://github.com/doorkeeper-gem/doorkeeper-jwt/pull/56)
 
 ## [0.4.1] - 2022-02-23
 
