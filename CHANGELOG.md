@@ -6,7 +6,12 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## master
 
+Add here
+
+## [0.4.2] - 2024-08-12
+
 -  Rename encryption_method to signing_method [#53](https://github.com/doorkeeper-gem/doorkeeper-jwt/pull/53)
+-  Fix default token generation [#56](https://github.com/doorkeeper-gem/doorkeeper-jwt/pull/56)
 
 ### Fixed
 
