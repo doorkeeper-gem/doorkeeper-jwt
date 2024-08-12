@@ -75,18 +75,18 @@ Doorkeeper::JWT.configure do
   # `secret_key_path` will be ignored.
   use_application_secret false
 
-  # Set the encryption secret. This would be shared with any other applications
-  # that should be able to read the payload of the token. Defaults to "secret".
+  # Set the signing secret. This would be shared with any other applications
+  # that should be able to verify the authenticity of the token. Defaults to "secret".
   secret_key ENV['JWT_SECRET']
 
-  # If you want to use RS* encoding specify the path to the RSA key to use for
+  # If you want to use RS* algorithms specify the path to the RSA key to use for
   # signing. If you specify a `secret_key_path` it will be used instead of
   # `secret_key`.
   secret_key_path File.join('path', 'to', 'file.pem')
 
-  # Specify encryption type (https://github.com/progrium/ruby-jwt). Defaults to
+  # Specify cryptographic signing algorithm type (https://github.com/progrium/ruby-jwt). Defaults to
   # `nil`.
-  encryption_method :hs512
+  signing_method :hs512
 end
 ```
 

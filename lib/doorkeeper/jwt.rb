@@ -11,7 +11,7 @@ module Doorkeeper
         ::JWT.encode(
           token_payload(opts),
           secret_key(opts),
-          encryption_method,
+          signing_method,
           token_headers(opts)
         )
       end
@@ -31,22 +31,22 @@ module Doorkeeper
 
         return application_secret(opts) if use_application_secret?
         return secret_key_file unless secret_key_file.nil?
-        return rsa_key if rsa_encryption?
-        return ecdsa_key if ecdsa_encryption?
+        return rsa_key if rsa_signing?
+        return ecdsa_key if ecdsa_signing?
 
         Doorkeeper::JWT.configuration.secret_key
       end
 
       def secret_key_file
         return nil if Doorkeeper::JWT.configuration.secret_key_path.nil?
-        return rsa_key_file if rsa_encryption?
-        return ecdsa_key_file if ecdsa_encryption?
+        return rsa_key_file if rsa_signing?
+        return ecdsa_key_file if ecdsa_signing?
       end
 
-      def encryption_method
-        return "none" unless Doorkeeper::JWT.configuration.encryption_method
+      def signing_method
+        return "none" unless Doorkeeper::JWT.configuration.signing_method
 
-        Doorkeeper::JWT.configuration.encryption_method.to_s.upcase
+        Doorkeeper::JWT.configuration.signing_method.to_s.upcase
       end
 
       def use_application_secret?
@@ -83,12 +83,12 @@ module Doorkeeper
         secret
       end
 
-      def rsa_encryption?
-        /RS\d{3}/ =~ encryption_method
+      def rsa_signing?
+        /RS\d{3}/ =~ signing_method
       end
 
-      def ecdsa_encryption?
-        /ES\d{3}/ =~ encryption_method
+      def ecdsa_signing?
+        /ES\d{3}/ =~ signing_method
       end
 
       def rsa_key
