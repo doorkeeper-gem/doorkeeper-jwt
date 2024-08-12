@@ -42,6 +42,7 @@ module Doorkeeper
         # For backward compatibility. This library does not support encryption.
         def encryption_method(value)
           @config.instance_variable_set("@signing_method", value)
+          Kernel.warn("[DOORKEEPER-JWT]: Please use signing_method instead, this option is deprecated and will be removed soon")
         end
 
         def signing_method(value)
