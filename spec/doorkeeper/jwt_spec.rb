@@ -101,14 +101,14 @@ describe Doorkeeper::JWT do
       expect(decoded_token[1]["alg"]).to eq "HS256"
     end
 
-    it "creates a signed JWT token using the deprecated encryption_method" do
+    it "creates a signed JWT token using the deprecated signing_method" do
       described_class.configure do
         token_payload do
           { foo: "bar" }
         end
 
         secret_key "super secret"
-        encryption_method :hs256
+        signing_method :hs256
       end
 
       token = described_class.generate({})
@@ -204,9 +204,9 @@ describe Doorkeeper::JWT do
     end
 
     it "creates a signed JWT token with an ECDSA key from a string" do
-      secret_key = OpenSSL::PKey::EC.new("secp521r1")
-      secret_key.generate_key
-      public_key = OpenSSL::PKey::EC.new secret_key
+      secret_key = OpenSSL::PKey::EC.generate("secp521r1")
+
+      public_key = OpenSSL::PKey::EC.new(secret_key)
       public_key.private_key = nil
 
       described_class.configure do
