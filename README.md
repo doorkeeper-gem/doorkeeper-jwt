@@ -47,8 +47,9 @@ Doorkeeper::JWT.configure do
     user = User.find(opts[:resource_owner_id])
 
     {
+      exp: (opts[:created_at] + opts[:expires_in]).utc.to_i,
       iss: 'My App',
-      iat: Time.current.utc.to_i,
+      iat: opts[:created_at].utc.to_i,
       aud: opts[:application][:uid],
 
       # @see JWT reserved claims - https://tools.ietf.org/html/draft-jones-json-web-token-07#page-7
