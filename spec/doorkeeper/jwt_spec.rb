@@ -206,8 +206,7 @@ describe Doorkeeper::JWT do
     it "creates a signed JWT token with an ECDSA key from a string" do
       secret_key = OpenSSL::PKey::EC.generate("secp521r1")
 
-      public_key = OpenSSL::PKey::EC.new(secret_key)
-      public_key.private_key = nil
+      public_key = OpenSSL::PKey.read(secret_key.public_to_pem)
 
       described_class.configure do
         token_payload do
