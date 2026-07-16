@@ -6,7 +6,7 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## master
 
-Add here
+- [#52] Reuse Doorkeeper core config options DSL
 
 ## [0.4.2] - 2024-08-12
 
