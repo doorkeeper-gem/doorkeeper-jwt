@@ -5,5 +5,6 @@ Coveralls.wear!
 
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 
+require "active_support/all"
 require "doorkeeper/jwt"
 require "pry"

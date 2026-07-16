@@ -147,12 +147,12 @@ describe Doorkeeper::JWT do
           { foo: "bar" }
         end
 
-        secret_key_path "spec/support/1024key.pem"
+        secret_key_path "spec/support/2048key.pem"
         signing_method :rs512
       end
 
       token = described_class.generate({})
-      secret_key = OpenSSL::PKey::RSA.new File.read("spec/support/1024key.pem")
+      secret_key = OpenSSL::PKey::RSA.new File.read("spec/support/2048key.pem")
       decoded_token = ::JWT.decode(token, secret_key, true, algorithm: "RS512")
 
       expect(decoded_token[0]).to be_a(Hash)
@@ -162,7 +162,7 @@ describe Doorkeeper::JWT do
     end
 
     it "creates a signed JWT token with an RSA key from a string" do
-      secret_key = OpenSSL::PKey::RSA.new(1024)
+      secret_key = OpenSSL::PKey::RSA.new(2048)
 
       described_class.configure do
         token_payload do
@@ -206,8 +206,7 @@ describe Doorkeeper::JWT do
     it "creates a signed JWT token with an ECDSA key from a string" do
       secret_key = OpenSSL::PKey::EC.generate("secp521r1")
 
-      public_key = OpenSSL::PKey::EC.new(secret_key)
-      public_key.private_key = nil
+      public_key = OpenSSL::PKey.read(secret_key.public_to_pem)
 
       described_class.configure do
         token_payload do
@@ -229,7 +228,7 @@ describe Doorkeeper::JWT do
 
     context "when use_application_secret used" do
       let(:secret_key) do
-        OpenSSL::PKey::RSA.new(1024)
+        OpenSSL::PKey::RSA.new(2048)
       end
 
       let(:application) do
@@ -265,7 +264,7 @@ describe Doorkeeper::JWT do
 
     context "when use_application_secret used and Doorkeeper version < 5.1.0" do
       let(:secret_key) do
-        OpenSSL::PKey::RSA.new(1024)
+        OpenSSL::PKey::RSA.new(2048)
       end
 
       let(:application) { { secret: secret_key } }
@@ -295,7 +294,7 @@ describe Doorkeeper::JWT do
 
     context "when use_application_secret used" do
       let(:secret_key) do
-        OpenSSL::PKey::RSA.new(1024)
+        OpenSSL::PKey::RSA.new(2048)
       end
 
       let(:application) do
