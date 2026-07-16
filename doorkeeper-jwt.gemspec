@@ -17,10 +17,18 @@ Gem::Specification.new do |spec|
   spec.license = "MIT"
 
   spec.bindir = "exe"
-  spec.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  spec.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features|bin)/}) }
   spec.executables = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.test_files = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
+
+  spec.metadata = {
+    "homepage_uri" => "https://github.com/doorkeeper-gem/doorkeeper-jwt",
+    "changelog_uri" => "https://github.com/doorkeeper-gem/doorkeeper-jwt/blob/main/CHANGELOG.md",
+    "source_code_uri" => "https://github.com/doorkeeper-gem/doorkeeper-jwt",
+    "bug_tracker_uri" => "https://github.com/doorkeeper-gem/doorkeeper-jwt/issues",
+    "funding_uri" => "https://opencollective.com/doorkeeper-gem",
+  }
 
   spec.add_dependency "jwt", ">= 2.1"
 
