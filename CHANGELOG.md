@@ -6,7 +6,8 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## master
 
-- [#52] Reuse Doorkeeper core config options DSL
+- [#58] Reuse Doorkeeper core config options DSL
+- [#59] Include bin directory in gemspec correctly 
 
 ## [0.4.2] - 2024-08-12
 
