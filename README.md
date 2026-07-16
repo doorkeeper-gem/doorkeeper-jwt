@@ -46,8 +46,7 @@ Doorkeeper::JWT.configure do
   token_payload do |opts|
     user = User.find(opts[:resource_owner_id])
 
-    {
-      exp: (opts[:created_at] + opts[:expires_in]).utc.to_i,
+    payload = {
       iss: 'My App',
       iat: opts[:created_at].utc.to_i,
       aud: opts[:application][:uid],
@@ -61,6 +60,9 @@ Doorkeeper::JWT.configure do
         email: user.email
       }
     }
+
+    payload[:exp] = (opts[:created_at] + opts[:expires_in]).utc.to_i if opts[:expires_in]
+    payload
   end
 
   # Optionally set additional headers for the JWT. See
