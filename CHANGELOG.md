@@ -6,8 +6,12 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## master
 
-- [#58] Reuse Doorkeeper core config options DSL
-- [#59] Include bin directory in gemspec correctly 
+- Add your entry here
+
+## [0.4.2] - 2024-08-12
+
+- Reuse Doorkeeper core config options DSL [#58](https://github.com/doorkeeper-gem/doorkeeper-jwt/pull/58)
+- Include bin directory in gemspec correctly [#59](https://github.com/doorkeeper-gem/doorkeeper-jwt/pull/59)
 
 ## [0.4.2] - 2024-08-12
 
