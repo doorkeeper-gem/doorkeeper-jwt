@@ -8,7 +8,7 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 - Add your entry here
 
-## [0.4.2] - 2024-08-12
+## [0.4.3] - 2026-07-20
 
 - Reuse Doorkeeper core config options DSL [#58](https://github.com/doorkeeper-gem/doorkeeper-jwt/pull/58)
 - Include bin directory in gemspec correctly [#59](https://github.com/doorkeeper-gem/doorkeeper-jwt/pull/59)
