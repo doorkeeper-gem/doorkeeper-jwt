@@ -29,26 +29,10 @@ module Doorkeeper
           @config
         end
 
-        def use_application_secret(value)
-          @config.instance_variable_set("@use_application_secret", value)
-        end
-
-        def secret_key(value)
-          @config.instance_variable_set("@secret_key", value)
-        end
-
-        def secret_key_path(value)
-          @config.instance_variable_set("@secret_key_path", value)
-        end
-
         # For backward compatibility. This library does not support encryption.
         def encryption_method(value)
           @config.instance_variable_set("@signing_method", value)
           Kernel.warn("[DOORKEEPER-JWT]: Please use signing_method instead, this option is deprecated and will be removed soon")
-        end
-
-        def signing_method(value)
-          @config.instance_variable_set("@signing_method", value)
         end
       end
 

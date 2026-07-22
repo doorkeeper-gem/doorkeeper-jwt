@@ -1,9 +1,22 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "open3"
 
 describe(Doorkeeper::JWT, "#configuration") do
   subject(:configuration) { described_class.configuration }
+
+  describe "loading the gem" do
+    it "does not emit config option redefinition warnings" do
+      lib_dir = File.expand_path("../../../lib", __dir__)
+      code = 'require "active_support/all"; require "doorkeeper/jwt"'
+
+      output, status = Open3.capture2e(Gem.ruby, "-I", lib_dir, "-e", code)
+
+      expect(status).to be_success, output
+      expect(output).not_to include("already defined and will be overridden")
+    end
+  end
 
   describe "token_payload" do
     it "is nil by default" do
