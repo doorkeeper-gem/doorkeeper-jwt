@@ -323,5 +323,19 @@ describe Doorkeeper::JWT do
         )
       end
     end
+
+    describe ".valid_doorkeeper_token?" do
+      it "returns true for generated JWT token" do
+        described_class.configure {}
+
+        token = described_class.generate({})
+
+        expect(described_class.valid_doorkeeper_token?(token)).to be(true)
+      end
+
+      it "returns false for malformed token" do
+        expect(described_class.valid_doorkeeper_token?("invalid-token")).to be(false)
+      end
+    end
   end
 end
