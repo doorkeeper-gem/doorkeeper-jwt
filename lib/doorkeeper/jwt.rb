@@ -16,6 +16,15 @@ module Doorkeeper
         )
       end
 
+      def valid_doorkeeper_token?(token)
+        return false unless token.is_a?(String)
+
+        ::JWT.decode(token, nil, false)
+        true
+      rescue ::JWT::DecodeError, ArgumentError
+        false
+      end
+
       private
 
       def token_payload(opts = {})
