@@ -101,6 +101,16 @@ describe Doorkeeper::JWT do
         .to output(/issuing UNSIGNED/).to_stderr
     end
 
+    it "refuses to issue an unsigned token when the signing_method block returns nil" do
+      described_class.configure do
+        secret_key "super secret"
+        signing_method { |_opts| nil }
+      end
+
+      expect { described_class.generate({}) }
+        .to raise_error(Doorkeeper::JWT::SigningMethodMissing, /Refusing to issue an unsigned/)
+    end
+
     it "creates a signed JWT token using hs256" do
       described_class.configure do
         secret_key "super secret"
@@ -264,6 +274,110 @@ describe Doorkeeper::JWT do
       expect(decoded_token[0]["foo"]).to eq "bar"
       expect(decoded_token[1]).to be_a(Hash)
       expect(decoded_token[1]["alg"]).to eq "ES512"
+    end
+
+    context "when signing_method and secret_key are configured with blocks" do
+      let(:rsa_key) { OpenSSL::PKey::RSA.new(2048) }
+
+      before do
+        rsa_key = self.rsa_key
+
+        described_class.configure do
+          token_payload do |opts|
+            { foo: "bar_#{opts[:resource_owner_id]}" }
+          end
+
+          signing_method do |opts|
+            opts[:scopes].to_s.include?("admin") ? :rs512 : :hs256
+          end
+
+          secret_key do |opts|
+            opts[:scopes].to_s.include?("admin") ? rsa_key : "super secret"
+          end
+        end
+      end
+
+      it "signs with the algorithm and key selected for the request", :aggregate_failures do
+        hs_token = described_class.generate(resource_owner_id: 1, scopes: "read")
+        rs_token = described_class.generate(resource_owner_id: 2, scopes: "admin")
+
+        hs_decoded = ::JWT.decode(hs_token, "super secret", true, algorithm: "HS256")
+        rs_decoded = ::JWT.decode(rs_token, rsa_key.public_key, true, algorithm: "RS512")
+
+        expect(hs_decoded[0]["foo"]).to eq "bar_1"
+        expect(hs_decoded[1]["alg"]).to eq "HS256"
+        expect(rs_decoded[0]["foo"]).to eq "bar_2"
+        expect(rs_decoded[1]["alg"]).to eq "RS512"
+      end
+
+      it "passes the same options to every block", :aggregate_failures do
+        received = []
+
+        described_class.configure do
+          signing_method do |opts|
+            received << opts
+            :hs256
+          end
+          secret_key do |opts|
+            received << opts
+            "super secret"
+          end
+        end
+
+        described_class.generate(resource_owner_id: 1, scopes: "read")
+
+        expect(received).not_to be_empty
+        expect(received.uniq).to eq [{ resource_owner_id: 1, scopes: "read" }]
+      end
+    end
+
+    context "when secret_key_path is configured with a block" do
+      before do
+        described_class.configure do
+          token_payload do
+            { foo: "bar" }
+          end
+
+          signing_method do |opts|
+            opts[:scopes] == "admin" ? :es512 : :rs512
+          end
+
+          secret_key_path do |opts|
+            opts[:scopes] == "admin" ? "spec/support/512key.pem" : "spec/support/2048key.pem"
+          end
+        end
+      end
+
+      it "reads the key file selected for the request", :aggregate_failures do
+        rs_token = described_class.generate(scopes: "read")
+        es_token = described_class.generate(scopes: "admin")
+
+        rsa_key = OpenSSL::PKey::RSA.new(File.read("spec/support/2048key.pem"))
+        ec_key = OpenSSL::PKey::EC.new(File.read("spec/support/512key_pub.pem"))
+        rs_decoded = ::JWT.decode(rs_token, rsa_key, true, algorithm: "RS512")
+        es_decoded = ::JWT.decode(es_token, ec_key, true, algorithm: "ES512")
+
+        expect(rs_decoded[0]["foo"]).to eq "bar"
+        expect(rs_decoded[1]["alg"]).to eq "RS512"
+        expect(es_decoded[0]["foo"]).to eq "bar"
+        expect(es_decoded[1]["alg"]).to eq "ES512"
+      end
+
+      it "does not evaluate the secret_key block when the path takes precedence" do
+        described_class.configure do
+          token_payload do
+            { foo: "bar" }
+          end
+
+          signing_method :rs512
+          secret_key_path "spec/support/2048key.pem"
+          secret_key do |_opts|
+            raise "secret_key must not be resolved when secret_key_path is set"
+          end
+        end
+
+        expect { described_class.generate(scopes: "read") }.not_to raise_error
+      end
     end
 
     context "when use_application_secret used" do

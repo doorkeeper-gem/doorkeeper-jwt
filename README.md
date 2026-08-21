@@ -137,6 +137,34 @@ end
 
 Tokens issued by the client credentials flow have no resource owner, so `opts[:resource_owner]` is `nil` there.
 
+### Using more than one signing method
+
+`signing_method`, `secret_key` and `secret_key_path` also accept a block. The block receives the same
+options hash as `token_payload` (`resource_owner_id`, `application`, `scopes`, ...) and is evaluated
+whenever the option is needed for the token being generated, so you can pick the algorithm and the key
+per request — for example an RSA-signed token for clients with an `admin` scope and an HMAC-signed token
+for everyone else:
+
+```ruby
+Doorkeeper::JWT.configure do
+  signing_method do |opts|
+    opts[:scopes].to_s.include?('admin') ? :rs512 : :hs256
+  end
+
+  secret_key do |opts|
+    opts[:scopes].to_s.include?('admin') ? ENV['JWT_RSA_PRIVATE_KEY'] : ENV['JWT_HMAC_SECRET']
+  end
+end
+```
+
+The blocks are independent of each other, so make sure `secret_key` (or `secret_key_path`) returns a key that
+matches the algorithm returned by `signing_method` for the same options.
+
+Note that the key options are only resolved when they are actually used: `secret_key_path` is read for
+`RS*` and `ES*` algorithms only, and both `secret_key` and `secret_key_path` are skipped entirely when
+`use_application_secret` is enabled. When a path is configured for an asymmetric algorithm it takes
+precedence, and the `secret_key` block is not evaluated at all.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/console` for an interactive prompt

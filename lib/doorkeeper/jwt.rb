@@ -9,10 +9,12 @@ module Doorkeeper
   module JWT
     class << self
       def generate(opts = {})
+        algorithm = signing_method(opts)
+
         ::JWT.encode(
           token_payload(opts),
-          secret_key(opts),
-          signing_method,
+          secret_key(opts, algorithm),
+          algorithm,
           token_headers(opts)
         )
       end
@@ -33,41 +35,61 @@ module Doorkeeper
         Doorkeeper::JWT.configuration.token_headers.call(opts)
       end
 
-      def secret_key(opts)
-        opts = { application: {} }.merge(opts)
-
+      def secret_key(opts, algorithm)
         return application_secret(opts) if use_application_secret?
-        return secret_key_file unless secret_key_file.nil?
-        return rsa_key if rsa_signing?
-        return ecdsa_key if ecdsa_signing?
 
-        Doorkeeper::JWT.configuration.secret_key
+        case algorithm
+        when /RS\d{3}/ then OpenSSL::PKey::RSA.new(asymmetric_key(opts))
+        when /ES\d{3}/ then OpenSSL::PKey::EC.new(asymmetric_key(opts))
+        else configured_secret_key(opts)
+        end
       end
 
-      def secret_key_file
-        return nil if Doorkeeper::JWT.configuration.secret_key_path.nil?
-        return rsa_key_file if rsa_signing?
-        return ecdsa_key_file if ecdsa_signing?
+      # A configured key file wins over `secret_key`, which is only resolved
+      # when no path is configured for this token.
+      def asymmetric_key(opts)
+        secret_key_file(opts) || configured_secret_key(opts)
       end
 
-      def signing_method
-        method = Doorkeeper::JWT.configuration.signing_method
+      def configured_secret_key(opts)
+        resolve_option(Doorkeeper::JWT.configuration.secret_key, opts)
+      end
+
+      def secret_key_file(opts)
+        path = resolve_option(Doorkeeper::JWT.configuration.secret_key_path, opts)
+        File.read(path) if path
+      end
+
+      def signing_method(opts)
+        method = resolve_option(Doorkeeper::JWT.configuration.signing_method, opts)
         return method.to_s.upcase unless method.nil?
 
-        if signing_key_configured?
-          raise(
-            SigningMethodMissing,
-            "JWT `signing_method` is not configured, but a signing key is." \
-            " Refusing to issue an unsigned (alg: none) token. Set" \
-            " `signing_method` explicitly, e.g. `signing_method :hs512`."
-          )
-        end
+        raise_missing_signing_method if signing_key_configured?
 
+        warn_unsigned_token
+        "none"
+      end
+
+      def raise_missing_signing_method
+        raise(
+          SigningMethodMissing,
+          "JWT `signing_method` is not configured, but a signing key is." \
+          " Refusing to issue an unsigned (alg: none) token. Set" \
+          " `signing_method` explicitly, e.g. `signing_method :hs512`."
+        )
+      end
+
+      def warn_unsigned_token
         Kernel.warn(
           "[DOORKEEPER-JWT]: No `signing_method` configured; issuing UNSIGNED" \
           " tokens (alg: none). This will become an error in a future release."
         )
-        "none"
+      end
+
+      # Options can be configured either with a static value or with a block
+      # that receives the token generation options and returns the value.
+      def resolve_option(value, opts)
+        value.respond_to?(:call) ? value.call(opts) : value
       end
 
       def use_application_secret?
@@ -75,6 +97,8 @@ module Doorkeeper
       end
 
       def application_secret(opts)
+        opts = { application: {} }.merge(opts)
+
         if opts[:application].nil?
           raise(
             "JWT `use_application_secret` is enabled, but application is nil." \
@@ -102,34 +126,6 @@ module Doorkeeper
         end
 
         secret
-      end
-
-      def rsa_signing?
-        /RS\d{3}/ =~ signing_method
-      end
-
-      def ecdsa_signing?
-        /ES\d{3}/ =~ signing_method
-      end
-
-      def rsa_key
-        OpenSSL::PKey::RSA.new(Doorkeeper::JWT.configuration.secret_key)
-      end
-
-      def ecdsa_key
-        OpenSSL::PKey::EC.new(Doorkeeper::JWT.configuration.secret_key)
-      end
-
-      def rsa_key_file
-        secret_key_file_open { |f| OpenSSL::PKey::RSA.new(f) }
-      end
-
-      def ecdsa_key_file
-        secret_key_file_open { |f| OpenSSL::PKey::EC.new(f) }
-      end
-
-      def secret_key_file_open(&block)
-        File.open(Doorkeeper::JWT.configuration.secret_key_path, &block)
       end
     end
   end

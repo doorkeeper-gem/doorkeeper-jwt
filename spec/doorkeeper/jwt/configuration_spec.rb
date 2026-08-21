@@ -68,6 +68,16 @@ describe(Doorkeeper::JWT, "#configuration") do
 
       expect(configuration.signing_method).to eq :rs512
     end
+
+    it "can be set with a block" do
+      block = proc { |_opts| :rs512 }
+
+      described_class.configure do
+        signing_method(&block)
+      end
+
+      expect(configuration.signing_method).to eq block
+    end
   end
 
   describe "use_application_secret" do
@@ -100,6 +110,16 @@ describe(Doorkeeper::JWT, "#configuration") do
 
       expect(configuration.secret_key).to eq "foo"
     end
+
+    it "can be set with a block" do
+      block = proc { |_opts| :rs512 }
+
+      described_class.configure do
+        secret_key(&block)
+      end
+
+      expect(configuration.secret_key).to eq block
+    end
   end
 
   describe "secret_key_path" do
@@ -115,6 +135,16 @@ describe(Doorkeeper::JWT, "#configuration") do
       end
 
       expect(configuration.secret_key_path).to eq "../support/1024key.pem"
+    end
+
+    it "can be set with a block" do
+      block = proc { |_opts| :rs512 }
+
+      described_class.configure do
+        secret_key_path(&block)
+      end
+
+      expect(configuration.secret_key_path).to eq block
     end
   end
 
