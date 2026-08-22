@@ -169,6 +169,21 @@ Note that the key options are only resolved when they are actually used: `secret
 `use_application_secret` is enabled. When a path is configured for an asymmetric algorithm it takes
 precedence, and the `secret_key` block is not evaluated at all.
 
+Whoever verifies these tokens now has more than one key to choose from, so tell them which one was used:
+`token_headers` receives the same options hash and is evaluated per token as well, which lets you emit a
+matching `kid` header.
+
+```ruby
+Doorkeeper::JWT.configure do
+  token_headers do |opts|
+    { kid: opts[:scopes].exists?('admin') ? 'rsa-2026' : 'hmac-2026' }
+  end
+end
+```
+
+See the `token_headers` entry in the configuration above for deriving the `kid` of an `RS*` key with
+`JWT::JWK` instead of labelling it by hand.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/console` for an interactive prompt
