@@ -148,14 +148,18 @@ for everyone else:
 ```ruby
 Doorkeeper::JWT.configure do
   signing_method do |opts|
-    opts[:scopes].to_s.include?('admin') ? :rs512 : :hs256
+    opts[:scopes].exists?('admin') ? :rs512 : :hs256
   end
 
   secret_key do |opts|
-    opts[:scopes].to_s.include?('admin') ? ENV['JWT_RSA_PRIVATE_KEY'] : ENV['JWT_HMAC_SECRET']
+    opts[:scopes].exists?('admin') ? ENV['JWT_RSA_PRIVATE_KEY'] : ENV['JWT_HMAC_SECRET']
   end
 end
 ```
+
+Doorkeeper hands `opts[:scopes]` over as a `Doorkeeper::OAuth::Scopes`, so match a single scope with
+`exists?` rather than with a substring check: `opts[:scopes].to_s.include?('admin')` would also be true for
+an unrelated `superadmin` or `admin_readonly` scope, and picking a signing key that way is easy to get wrong.
 
 The blocks are independent of each other, so make sure `secret_key` (or `secret_key_path`) returns a key that
 matches the algorithm returned by `signing_method` for the same options.

@@ -288,11 +288,11 @@ describe Doorkeeper::JWT do
           end
 
           signing_method do |opts|
-            opts[:scopes].to_s.include?("admin") ? :rs512 : :hs256
+            opts[:scopes] == "admin" ? :rs512 : :hs256
           end
 
           secret_key do |opts|
-            opts[:scopes].to_s.include?("admin") ? rsa_key : "super secret"
+            opts[:scopes] == "admin" ? rsa_key : "super secret"
           end
         end
       end
