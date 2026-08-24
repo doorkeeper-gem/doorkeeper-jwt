@@ -137,6 +137,53 @@ end
 
 Tokens issued by the client credentials flow have no resource owner, so `opts[:resource_owner]` is `nil` there.
 
+### Using more than one signing method
+
+`signing_method`, `secret_key` and `secret_key_path` also accept a block. The block receives the same
+options hash as `token_payload` (`resource_owner_id`, `application`, `scopes`, ...) and is evaluated
+whenever the option is needed for the token being generated, so you can pick the algorithm and the key
+per request — for example an RSA-signed token for clients with an `admin` scope and an HMAC-signed token
+for everyone else:
+
+```ruby
+Doorkeeper::JWT.configure do
+  signing_method do |opts|
+    opts[:scopes].exists?('admin') ? :rs512 : :hs256
+  end
+
+  secret_key do |opts|
+    opts[:scopes].exists?('admin') ? ENV['JWT_RSA_PRIVATE_KEY'] : ENV['JWT_HMAC_SECRET']
+  end
+end
+```
+
+Doorkeeper hands `opts[:scopes]` over as a `Doorkeeper::OAuth::Scopes`, so match a single scope with
+`exists?` rather than with a substring check: `opts[:scopes].to_s.include?('admin')` would also be true for
+an unrelated `superadmin` or `admin_readonly` scope, and picking a signing key that way is easy to get wrong.
+
+The blocks are independent of each other, so make sure `secret_key` (or `secret_key_path`) returns a key that
+matches the algorithm returned by `signing_method` for the same options.
+
+Note that the key options are only resolved when they are actually used: `secret_key_path` is read for
+`RS*` and `ES*` algorithms only, and both `secret_key` and `secret_key_path` are skipped entirely when
+`use_application_secret` is enabled. When a path is configured for an asymmetric algorithm it takes
+precedence, and the `secret_key` block is not evaluated at all.
+
+Whoever verifies these tokens now has more than one key to choose from, so tell them which one was used:
+`token_headers` receives the same options hash and is evaluated per token as well, which lets you emit a
+matching `kid` header.
+
+```ruby
+Doorkeeper::JWT.configure do
+  token_headers do |opts|
+    { kid: opts[:scopes].exists?('admin') ? 'rsa-2026' : 'hmac-2026' }
+  end
+end
+```
+
+See the `token_headers` entry in the configuration above for deriving the `kid` of an `RS*` key with
+`JWT::JWK` instead of labelling it by hand.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/console` for an interactive prompt
