@@ -7,6 +7,7 @@ project adheres to [Semantic Versioning](http://semver.org/).
 ## master
 
 - **Security**: Raise `Doorkeeper::JWT::SigningMethodMissing` instead of issuing an unsigned (`alg: none`) JWT when a signing key is configured but `signing_method` is not. Issuing unsigned tokens with no signing key at all now warns and will become an error in a future release
+- Add `required_ruby_version >= 3.2` to the gemspec and update the CI matrix to 3.2, 3.3, 3.4 and 4.0, aligning with doorkeeper core
 - Allow `signing_method`, `secret_key` and `secret_key_path` to be configured with a block evaluated per token [#66](https://github.com/doorkeeper-gem/doorkeeper-jwt/pull/66)
 - Fix broken Coveralls tests coverage [#67](https://github.com/doorkeeper-gem/doorkeeper-jwt/pull/67)
 - Add your entry here
