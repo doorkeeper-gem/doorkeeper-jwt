@@ -477,6 +477,50 @@ describe Doorkeeper::JWT do
         )
       end
     end
+
+    context "when use_application_secret is enabled but no application is given" do
+      before do
+        described_class.configure do
+          use_application_secret true
+          signing_method :hs256
+        end
+      end
+
+      it "raises when the application is explicitly nil" do
+        expect { described_class.generate(application: nil) }
+          .to raise_error(/application is nil/)
+      end
+
+      it "reports the secret, not the application, when the option is absent" do
+        expect { described_class.generate({}) }
+          .to raise_error(/application secret is nil/)
+      end
+    end
+
+    context "when use_application_secret is enabled but the secret is nil" do
+      before do
+        described_class.configure do
+          use_application_secret true
+          signing_method :hs256
+        end
+      end
+
+      it "raises for a Doorkeeper version < 5.1.0 application without a secret" do
+        expect { described_class.generate(application: { secret: nil }) }
+          .to raise_error(/application secret is nil/)
+      end
+
+      it "raises when the restored plaintext secret is nil" do
+        application =
+          instance_double("Doorkeeper::Application",
+                          plaintext_secret: nil,
+                          secret_strategy: class_double("Doorkeeper::SecretStoring::Plain",
+                                                        allows_restoring_secrets?: true))
+
+        expect { described_class.generate(application: application) }
+          .to raise_error(/application secret is nil/)
+      end
+    end
   end
 
   describe ".signing_key_configured?" do
