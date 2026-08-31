@@ -11,6 +11,6 @@ gemspec
 doorkeeper_version = ENV.fetch("DOORKEEPER_VERSION", "latest")
 gem "doorkeeper", doorkeeper_version unless doorkeeper_version == "latest"
 
-gem "simplecov", "~> 0.22", require: false
+gem "simplecov", "~> 1.1", require: false
 gem "rubocop", "~> 1.8", require: false
 gem "rubocop-rspec", "~> 3.0", require: false
