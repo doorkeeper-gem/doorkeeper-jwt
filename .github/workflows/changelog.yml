@@ -16,10 +16,10 @@ jobs:
   changelog:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Check changed paths
         id: changes
-        uses: dorny/paths-filter@v4
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         with:
           filters: |
             gem_changes:
@@ -34,7 +34,7 @@ jobs:
       - name: Enforce changelog
         if: |
           steps.changes.outputs.gem_changes == 'true'
-        uses: dangoslen/changelog-enforcer@v3
+        uses: dangoslen/changelog-enforcer@8b5e9dc3121363bb7c0115f8533404d92af382de # v3.7.0
         with:
           changeLogPath: CHANGELOG.md
           skipLabels: "dependencies"
