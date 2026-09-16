@@ -10,7 +10,7 @@ module Doorkeeper
       # Semantic versioning
       MAJOR = 0
       MINOR = 4
-      TINY = 4
+      TINY = 5
       PRE = nil
 
       # Full version number
